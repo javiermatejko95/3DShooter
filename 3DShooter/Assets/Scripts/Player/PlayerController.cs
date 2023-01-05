@@ -13,16 +13,19 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float sprintSpeed;
     [SerializeField] private bool canJump = true;    
 
-    [Space]
-    [Header("Camera")]
+    [Space, Header("Camera")]
     [SerializeField] private Transform playerCamera;
 
-    [Space]
-    [Header("Shooting")]
-    [SerializeField] private ShootController shootController = null;
+    [Space, Header("Shooting")]
+    [SerializeField] private WeaponController weaponController = null;
+
+    [Space, Header("UI")]
+    [SerializeField] private PlayerUIController playerUIController = null;
     #endregion
 
     #region PRIVATE_FIELDS
+    private PlayerUIActions playerUIActions = null;
+
     private float gravity;    
 
     private bool isCrouching = false;
@@ -55,12 +58,17 @@ public class PlayerController : MonoBehaviour
     #region PRIVATE_METHODS
     private void Setup()
     {
+        playerUIController.Init();
+
+        playerUIActions = playerUIController.GetActions();
         cc = GetComponent<CharacterController>();
 
         sprintSpeed = 1f;
         canJump = true;
         isCrouching = false;
         isSprinting = false;
+
+        weaponController.Init(playerUIActions);
     }
 
     private void PlayerMovement()

@@ -10,6 +10,7 @@ public class WeaponSO : ScriptableObject
     [SerializeField] private float rateOfFire = 1f;
     [SerializeField] private float reloadTime = 0.5f;
     [SerializeField] private int maxAmmo = 120;
+    [SerializeField] private int maxMagazineSize = 30;
     #endregion
 
     #region PROPERTIES
@@ -17,5 +18,6 @@ public class WeaponSO : ScriptableObject
     public float RateOfFire { get => rateOfFire; }
     public float ReloadTime { get => reloadTime; }
     public int MaxAmmo { get => maxAmmo; }
+    public int MaxMagazineSize { get => maxMagazineSize; }
     #endregion
 }

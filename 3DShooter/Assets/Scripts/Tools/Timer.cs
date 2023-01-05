@@ -12,20 +12,25 @@ public class Timer : MonoBehaviour
     #endregion
 
     #region ACTIONS
-    private Action onReach = null;
+    private Action onReached = null;
     #endregion
 
     #region UNITY_CALLS
     private void Update()
     {
-        
+        if(isOn)
+        {
+            Countdown();
+        }        
     }
     #endregion
 
     #region INIT
-    public void Init()
+    public void Init(float startingTime, Action onReached = null)
     {
-
+        this.startingTime = startingTime;
+        currentTime = startingTime;
+        this.onReached = onReached;
     }
     #endregion
 
@@ -37,18 +42,20 @@ public class Timer : MonoBehaviour
 
     public void RestartTimer()
     {
-
+        currentTime = startingTime;
     }
     #endregion
 
     #region PRIVATE_METHODS
     private void Countdown()
     {
-        startingTime -= Time.deltaTime;
+        currentTime -= Time.deltaTime;
 
-        if(startingTime <= 0f)
+        if(currentTime <= 0f)
         {
-
+            ToggleTimer(false);
+            RestartTimer();
+            onReached?.Invoke();
         }
     }
     #endregion
