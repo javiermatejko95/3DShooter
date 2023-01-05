@@ -16,3 +16,4 @@ MonoBehaviour:
   rateOfFire: 1
   reloadTime: 0.5
   maxAmmo: 120
+  maxMagazineSize: 12
