@@ -32,8 +32,11 @@ public class WeaponController : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.R) && !isReloading)
         {
-            CancelShooting();
-            StartReloading();
+            if(selectedWeapon.MaxAmmo > 0)
+            {
+                CancelShooting();
+                StartReloading();
+            }            
         }
 
         if(Input.GetMouseButton(0))
