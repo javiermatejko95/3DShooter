@@ -12,6 +12,8 @@ public class WeaponController : MonoBehaviour
     [SerializeField] private RecoilCamera recoilCamera = null;
 
     [SerializeField] private GameObject weaponContainer = null;
+
+    [SerializeField] private AimDownSight aimDownSight = null;
     #endregion
 
     #region PRIVATE_FIELDS
@@ -39,7 +41,17 @@ public class WeaponController : MonoBehaviour
             }            
         }
 
-        if(Input.GetMouseButton(0))
+        if(Input.GetMouseButtonDown(1))
+        {
+            aimDownSight.SetIsAiming(true);
+        }
+
+        if (Input.GetMouseButtonUp(1))
+        {
+            aimDownSight.SetIsAiming(false);
+        }
+
+        if (Input.GetMouseButton(0))
         {
             Shoot();
         }
@@ -66,7 +78,9 @@ public class WeaponController : MonoBehaviour
     {
         selectedWeapon = weaponHandler.GetWeaponById(id);
 
-        Instantiate(selectedWeapon.ModelPrefab, weaponContainer.transform);
+        Transform weaponPosition = Instantiate(selectedWeapon.ModelPrefab, weaponContainer.transform).transform;
+
+        aimDownSight.Init(weaponPosition);
 
         playerUIActions.onUpdateAmmoText?.Invoke(selectedWeapon.CurrentAmmo, selectedWeapon.MaxAmmo);
 
