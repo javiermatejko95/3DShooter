@@ -7,9 +7,8 @@ public class CameraController : MonoBehaviour
     #region SERIALIZED_FIELDS
     [SerializeField] private Transform player = null;
 
-    [Space]
-    [Header("Config")]
-    [SerializeField] private float mouseSensitivity;
+    [Space, Header("Config")]
+    [SerializeField] private float mouseSensitivity;    
     #endregion
 
     #region PRIVATE_FIELDS
@@ -17,14 +16,14 @@ public class CameraController : MonoBehaviour
 
     private float rotationSpeedX;
     private float rotationSpeedY;
-    private float rotationRange = 60.0f;
+    private float rotationRange = 60.0f;    
     #endregion
 
     #region UNITY_CALLS
     private void Update()
     {
-        RotatePlayer();
-    }
+        RotatePlayer();        
+    }    
     #endregion
 
     #region PRIVATE_METHODS
@@ -36,6 +35,6 @@ public class CameraController : MonoBehaviour
         verticalAngle = Mathf.Clamp(verticalAngle, -rotationRange, rotationRange);
         transform.localEulerAngles = new Vector3(verticalAngle, 0, 0);
         player.Rotate(0, horRot, 0);
-    }
+    }    
     #endregion
 }

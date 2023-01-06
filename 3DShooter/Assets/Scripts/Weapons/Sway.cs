@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 public class Sway : MonoBehaviour
@@ -32,6 +31,10 @@ public class Sway : MonoBehaviour
     }
     #endregion
 
+    #region PUBLIC_METHODS
+
+    #endregion
+
     #region PRIVATE_METHODS
     private void UpdateSway()
     {
@@ -40,7 +43,8 @@ public class Sway : MonoBehaviour
 
         Quaternion xAdjustment = Quaternion.AngleAxis(-intensity * xMouse, Vector3.up);
         Quaternion yAdjustment = Quaternion.AngleAxis(intensity * yMouse, Vector3.right);
-        Quaternion targetRotation = originRotation * xAdjustment * yAdjustment;
+        Quaternion zAdjustment = Quaternion.AngleAxis(-intensity * xMouse, Vector3.forward);
+        Quaternion targetRotation = originRotation * xAdjustment * yAdjustment * zAdjustment;
 
         transform.localRotation = Quaternion.Lerp(transform.localRotation, targetRotation, Time.deltaTime * smooth);
     }

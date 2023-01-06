@@ -11,6 +11,7 @@ public class Weapon
     private int maxAmmo = 90;
     private int currentAmmo = 30;
     private int maxMagazineSize = 30;
+    private GameObject modelPrefab = null;
     #endregion
 
     #region PROPERTIES
@@ -20,6 +21,7 @@ public class Weapon
     public int MaxAmmo { get => maxAmmo; set => maxAmmo = value; }
     public int CurrentAmmo { get => currentAmmo; set => currentAmmo = value; }
     public int MaxMagazineSize { get => maxMagazineSize; }
+    public GameObject ModelPrefab { get => modelPrefab; }
     #endregion
 
     #region CONSTRUCTOR
@@ -31,6 +33,7 @@ public class Weapon
         maxAmmo = weaponData.MaxAmmo;
         currentAmmo = weaponData.MaxMagazineSize;
         maxMagazineSize = weaponData.MaxMagazineSize;
+        modelPrefab = weaponData.ModelPrefab;
     }
     #endregion
 }

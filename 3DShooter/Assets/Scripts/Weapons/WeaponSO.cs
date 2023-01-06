@@ -11,6 +11,7 @@ public class WeaponSO : ScriptableObject
     [SerializeField] private float reloadTime = 0.5f;
     [SerializeField] private int maxAmmo = 120;
     [SerializeField] private int maxMagazineSize = 30;
+    [SerializeField] private GameObject modelPrefab = null;
     #endregion
 
     #region PROPERTIES
@@ -19,5 +20,6 @@ public class WeaponSO : ScriptableObject
     public float ReloadTime { get => reloadTime; }
     public int MaxAmmo { get => maxAmmo; }
     public int MaxMagazineSize { get => maxMagazineSize; }
+    public GameObject ModelPrefab { get => modelPrefab; }
     #endregion
 }

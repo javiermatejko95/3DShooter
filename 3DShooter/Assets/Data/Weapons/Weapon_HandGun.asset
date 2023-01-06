@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: Weapon_HandGun
   m_EditorClassIdentifier: 
   id: HandGun
-  rateOfFire: 1
+  rateOfFire: 0.5
   reloadTime: 0.5
   maxAmmo: 120
   maxMagazineSize: 12
+  modelPrefab: {fileID: 5384081396781330648, guid: f3571ea07f3156e4da039de3220414b3, type: 3}

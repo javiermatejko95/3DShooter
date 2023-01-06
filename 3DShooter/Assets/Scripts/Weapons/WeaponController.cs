@@ -8,6 +8,10 @@ public class WeaponController : MonoBehaviour
     [SerializeField] private WeaponHandler weaponHandler = null;
     [SerializeField] private Timer weaponTimer = null;
     [SerializeField] private Timer reloadTimer = null;
+    [SerializeField] private Recoil recoil = null;
+    [SerializeField] private RecoilCamera recoilCamera = null;
+
+    [SerializeField] private GameObject weaponContainer = null;
     #endregion
 
     #region PRIVATE_FIELDS
@@ -16,9 +20,11 @@ public class WeaponController : MonoBehaviour
     private PlayerUIActions playerUIActions = null;
 
     private Weapon selectedWeapon = null;
-    
+
     private bool canShoot = false;
     private bool isReloading = false;
+
+    private RecoilActions recoilActions = null;
     #endregion
 
     #region UNITY_CALLS
@@ -43,7 +49,12 @@ public class WeaponController : MonoBehaviour
         this.camera = Camera.main;
         this.playerUIActions = playerUIActions;
 
-        SetWeaponById(WeaponConstants.idTestingWeapon);
+        recoil.Init();
+
+        recoilActions = recoil.GetActions();
+        recoilCamera.Init(recoilActions);
+
+        SetWeaponById(WeaponConstants.idSMG);
     }
     #endregion
 
@@ -51,6 +62,8 @@ public class WeaponController : MonoBehaviour
     public void SetWeaponById(string id)
     {
         selectedWeapon = weaponHandler.GetWeaponById(id);
+
+        Instantiate(selectedWeapon.ModelPrefab, weaponContainer.transform);
 
         playerUIActions.onUpdateAmmoText?.Invoke(selectedWeapon.CurrentAmmo, selectedWeapon.MaxAmmo);
 
@@ -78,6 +91,7 @@ public class WeaponController : MonoBehaviour
             return;
         }
 
+        recoilActions.onRecoil?.Invoke();
         selectedWeapon.CurrentAmmo--;
 
         ToggleShooting(false);
