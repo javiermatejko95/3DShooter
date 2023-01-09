@@ -18,8 +18,15 @@ public class RecoilCamera : MonoBehaviour
     private Vector3 currentRotation = new();
     private Vector3 rotation = new();
 
+    private bool initialized = false;
+
     private void FixedUpdate()
     {
+        if(!initialized)
+        {
+            return;
+        }
+
         currentRotation = Vector3.Lerp(currentRotation, Vector3.zero, returnSpeed * Time.deltaTime);
         rotation = Vector3.Slerp(rotation, currentRotation, rotationSpeed * Time.fixedDeltaTime);
         transform.localRotation = Quaternion.Euler(rotation);
@@ -28,6 +35,8 @@ public class RecoilCamera : MonoBehaviour
     public void Init(RecoilActions recoilActions)
     {
         recoilActions.onRecoil += Fire;
+
+        initialized = true;
     }
 
     private void Fire()

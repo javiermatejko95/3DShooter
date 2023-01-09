@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Reload
+public class Reload : MonoBehaviour
 {
     #region EXPOSED_FIELDS
     [SerializeField] private Transform originalPosition = null;

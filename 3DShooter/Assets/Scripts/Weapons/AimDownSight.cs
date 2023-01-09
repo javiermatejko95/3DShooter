@@ -22,6 +22,8 @@ public class AimDownSight : MonoBehaviour
 
     private float currentFOV = 90f;
     private float targetFOV = 90f;
+
+    private bool initialized = false;
     #endregion
 
     #region PRIVATE_METHODS
@@ -56,10 +58,17 @@ public class AimDownSight : MonoBehaviour
         this.weaponPosition = weaponPosition;
         this.camera = camera;
         currentFOV = defaultFOV;
+
+        initialized = true;
     }
 
     public void UpdateAimDownSight()
     {
+        if(!initialized)
+        {
+            return;
+        }
+
         if (isAiming)
         {
             weaponPosition.localPosition = Vector3.Lerp(weaponPosition.localPosition, adsPosition.localPosition, speed * Time.deltaTime);
