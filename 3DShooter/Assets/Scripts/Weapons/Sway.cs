@@ -20,7 +20,7 @@ public class Sway : MonoBehaviour
 
     private void Update()
     {
-        UpdateSway();
+
     }
     #endregion
 
@@ -36,7 +36,7 @@ public class Sway : MonoBehaviour
     #endregion
 
     #region PRIVATE_METHODS
-    private void UpdateSway()
+    public void UpdateSway()
     {
         float xMouse = Input.GetAxis("Mouse X");
         float yMouse = Input.GetAxis("Mouse Y");

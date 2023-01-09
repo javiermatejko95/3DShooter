@@ -14,6 +14,8 @@ public class WeaponController : MonoBehaviour
     [SerializeField] private GameObject weaponContainer = null;
 
     [SerializeField] private AimDownSight aimDownSight = null;
+    [SerializeField] private Reload reload = null;
+    [SerializeField] private Sway sway = null;
     #endregion
 
     #region PRIVATE_FIELDS
@@ -34,26 +36,39 @@ public class WeaponController : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.R) && !isReloading)
         {
-            if(selectedWeapon.MaxAmmo > 0)
+            if(selectedWeapon.MaxAmmo > 0 && selectedWeapon.CurrentAmmo < selectedWeapon.MaxMagazineSize)
             {
                 CancelShooting();
                 StartReloading();
+                return;
             }            
         }
 
-        if(Input.GetMouseButtonDown(1))
+        if(!isReloading)
         {
-            aimDownSight.SetIsAiming(true);
-        }
+            sway.UpdateSway();
+            aimDownSight.UpdateAimDownSight();
 
-        if (Input.GetMouseButtonUp(1))
+            if (Input.GetMouseButtonDown(1))
+            {
+                aimDownSight.SetIsAiming(true);
+            }
+
+            if (Input.GetMouseButtonUp(1))
+            {
+                aimDownSight.SetIsAiming(false);
+            }
+
+            if (Input.GetMouseButton(0))
+            {
+                Shoot();
+            }
+        }
+        else
         {
             aimDownSight.SetIsAiming(false);
-        }
-
-        if (Input.GetMouseButton(0))
-        {
-            Shoot();
+            aimDownSight.UpdateFOV();
+            reload.UpdateReload();
         }
     }
     #endregion
@@ -81,6 +96,7 @@ public class WeaponController : MonoBehaviour
         Transform weaponPosition = Instantiate(selectedWeapon.ModelPrefab, weaponContainer.transform).transform;
 
         aimDownSight.Init(weaponPosition);
+        reload.Init(weaponPosition);
 
         playerUIActions.onUpdateAmmoText?.Invoke(selectedWeapon.CurrentAmmo, selectedWeapon.MaxAmmo);
 
@@ -94,6 +110,7 @@ public class WeaponController : MonoBehaviour
             Reload();
             ToggleShooting(true);
             ToggleReloading(false);
+            reload.SetIsReloading(false);
         });
 
         ToggleShooting(true);
@@ -157,6 +174,7 @@ public class WeaponController : MonoBehaviour
     {
         if(selectedWeapon.MaxAmmo > 0)
         {
+            reload.SetIsReloading(true);
             reloadTimer.ToggleTimer(true);
             ToggleReloading(true);
         }        
@@ -165,7 +183,7 @@ public class WeaponController : MonoBehaviour
     private void CancelShooting()
     {
         weaponTimer.ToggleTimer(false);
-        weaponTimer.RestartTimer();
+        weaponTimer.RestartTimer();        
     }
 
     private void ToggleShooting(bool status)
