@@ -80,6 +80,7 @@ public class WeaponController : MonoBehaviour
         this.playerUIActions = playerUIActions;
 
         recoil.Init();
+        sway.Init();
 
         recoilActions = recoil.GetActions();
         recoilCamera.Init(recoilActions);
@@ -95,7 +96,7 @@ public class WeaponController : MonoBehaviour
 
         Transform weaponPosition = Instantiate(selectedWeapon.ModelPrefab, weaponContainer.transform).transform;
 
-        aimDownSight.Init(weaponPosition);
+        aimDownSight.Init(weaponPosition, camera);
         reload.Init(weaponPosition);
 
         playerUIActions.onUpdateAmmoText?.Invoke(selectedWeapon.CurrentAmmo, selectedWeapon.MaxAmmo);

@@ -13,15 +13,7 @@ public class Sway : MonoBehaviour
     #endregion
 
     #region UNITY_CALLS
-    private void Awake()
-    {
-        Init();
-    }
 
-    private void Update()
-    {
-
-    }
     #endregion
 
     #region INIT

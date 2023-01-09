@@ -1,8 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class Reload : MonoBehaviour
+public class Reload
 {
     #region EXPOSED_FIELDS
     [SerializeField] private Transform originalPosition = null;
@@ -17,20 +15,6 @@ public class Reload : MonoBehaviour
 
     private Vector3 rotation = new();
     private Vector3 currentRotation = new();
-    #endregion
-
-    #region UNITY_CALLS
-    private void Awake()
-    {
-
-    }
-
-    private void Update()
-    {
-        //TODO: rotation for reloading
-
-        
-    }
     #endregion
 
     public void SetIsReloading(bool state)

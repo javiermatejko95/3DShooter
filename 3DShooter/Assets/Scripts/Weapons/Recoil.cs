@@ -6,7 +6,7 @@ public class RecoilActions
     public Action onRecoil = null;
 }
 
-public class Recoil : MonoBehaviour
+public class Recoil
 {
     #region EXPOSED_FIELDS
     [Header("Reference point")]

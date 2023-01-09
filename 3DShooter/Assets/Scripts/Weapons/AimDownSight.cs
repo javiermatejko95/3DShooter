@@ -24,19 +24,6 @@ public class AimDownSight : MonoBehaviour
     private float targetFOV = 90f;
     #endregion
 
-    #region UNITY_CALLS
-    private void Awake()
-    {
-        camera = Camera.main;
-        currentFOV = defaultFOV;
-    }
-
-    private void Update()
-    {
-        
-    }
-    #endregion
-
     #region PRIVATE_METHODS
     private void SetFieldOfView(float value)
     {
@@ -64,9 +51,11 @@ public class AimDownSight : MonoBehaviour
         isAiming = state;
     }
 
-    public void Init(Transform weaponPosition)
+    public void Init(Transform weaponPosition, Camera camera)
     {
         this.weaponPosition = weaponPosition;
+        this.camera = camera;
+        currentFOV = defaultFOV;
     }
 
     public void UpdateAimDownSight()
