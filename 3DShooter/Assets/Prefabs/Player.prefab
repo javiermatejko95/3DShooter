@@ -838,7 +838,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5307927921418018445}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.46, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -893,4 +893,4 @@ MonoBehaviour:
   originalPosition: {fileID: 8934670999693218225}
   reloadingPosition: {fileID: 3276004292758906172}
   speed: 10
-  rotationAngle: 10
+  rotationAngle: 35
