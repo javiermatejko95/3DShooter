@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: Shotgun
   rateOfFire: 1
-  reloadTime: 1
-  maxAmmo: 6
-  maxMagazineSize: 24
-  modelPrefab: {fileID: 8932474970694211156, guid: 4e37b3e906530fc42bd77e0339461edd, type: 3}
+  reloadTime: 2
+  maxAmmo: 24
+  currentMaxAmmo: 6
+  maxMagazineSize: 6

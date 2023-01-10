@@ -1,6 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
+
 using UnityEngine;
+
+public class AimDownSightActions
+{
+    public Action onUpdate = null;
+    public Action onUpdateFOV = null;
+    public Action<bool> onSetIsAiming = null;
+    public Func<bool> onGetIsAiming = null;
+}
 
 public class AimDownSight : MonoBehaviour
 {
@@ -21,9 +29,33 @@ public class AimDownSight : MonoBehaviour
     private bool isAiming = false;
 
     private float currentFOV = 90f;
-    private float targetFOV = 90f;
 
     private bool initialized = false;
+
+    private AimDownSightActions aimDownSightActions = new();
+    #endregion
+
+    #region INIT
+    public void Init(Transform weaponPosition, Camera camera)
+    {
+        this.weaponPosition = weaponPosition;
+        this.camera = camera;
+        currentFOV = defaultFOV;
+
+        initialized = true;
+
+        aimDownSightActions.onUpdate = UpdateAimDownSight;
+        aimDownSightActions.onUpdateFOV = UpdateFOV;
+        aimDownSightActions.onSetIsAiming = SetIsAiming;
+        aimDownSightActions.onGetIsAiming = GetIsAiming;
+    }
+    #endregion
+
+    #region PUBLIC_METHODS
+    public AimDownSightActions GetActions()
+    {
+        return aimDownSightActions;
+    }
     #endregion
 
     #region PRIVATE_METHODS
@@ -46,25 +78,20 @@ public class AimDownSight : MonoBehaviour
             }
         }        
     }
-    #endregion
 
-    public void SetIsAiming(bool state)
+    private void SetIsAiming(bool state)
     {
         isAiming = state;
     }
 
-    public void Init(Transform weaponPosition, Camera camera)
+    private bool GetIsAiming()
     {
-        this.weaponPosition = weaponPosition;
-        this.camera = camera;
-        currentFOV = defaultFOV;
-
-        initialized = true;
+        return isAiming;
     }
 
-    public void UpdateAimDownSight()
+    private void UpdateAimDownSight()
     {
-        if(!initialized)
+        if (!initialized)
         {
             return;
         }
@@ -81,8 +108,9 @@ public class AimDownSight : MonoBehaviour
         }
     }
 
-    public void UpdateFOV()
+    private void UpdateFOV()
     {
         SetFieldOfView(defaultFOV);
     }
+    #endregion
 }

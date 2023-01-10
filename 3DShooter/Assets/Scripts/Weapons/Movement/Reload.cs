@@ -6,6 +6,7 @@ public class Reload : MonoBehaviour
     [SerializeField] private Transform originalPosition = null;
     [SerializeField] private Transform reloadingPosition = null;
     [SerializeField] private float speed = 2f;
+    [SerializeField] private float rotationAngle = 10f;
     #endregion
 
     #region PRIVATE_FIELDS
@@ -13,8 +14,9 @@ public class Reload : MonoBehaviour
 
     private bool isReloading = false;
 
-    private Vector3 rotation = new();
-    private Vector3 currentRotation = new();
+    private Quaternion originRotation = new();
+
+    private bool initialized = false;
     #endregion
 
     public void SetIsReloading(bool state)
@@ -25,23 +27,35 @@ public class Reload : MonoBehaviour
     public void Init(Transform weaponPosition)
     {
         this.weaponPosition = weaponPosition;
+        originRotation = Quaternion.identity;
+
+        initialized = true;
     }
 
     public void UpdateReload()
     {
+        if(!initialized)
+        {
+            return;
+        }
+
         if (isReloading)
         {
             weaponPosition.localPosition = Vector3.Lerp(weaponPosition.localPosition, reloadingPosition.localPosition, speed * Time.deltaTime);
 
-            //rotation = Vector3.Slerp(rotation, reloadingPosition.localPosition, speed * Time.fixedDeltaTime);
-            //weaponPosition.localRotation = Quaternion.Euler(rotation);
+            Quaternion xAdjustment = Quaternion.AngleAxis(rotationAngle, Vector3.right);
+            Quaternion targetRotation = originRotation * xAdjustment;
+
+            transform.localRotation = Quaternion.Lerp(transform.localRotation, targetRotation, speed * Time.deltaTime);
         }
         else
         {
             weaponPosition.localPosition = Vector3.Lerp(weaponPosition.localPosition, originalPosition.localPosition, speed * Time.deltaTime);
 
-            //rotation = Vector3.Slerp(rotation, originalPosition.localPosition, speed * Time.fixedDeltaTime);
-            //weaponPosition.localRotation = Quaternion.Euler(rotation);
+            Quaternion xAdjustment = Quaternion.AngleAxis(0f, Vector3.right);
+            Quaternion targetRotation = originRotation * xAdjustment;
+
+            transform.localRotation = Quaternion.Lerp(transform.localRotation, targetRotation, speed * Time.deltaTime);
         }
     }
 }

@@ -10,6 +10,8 @@ public class Sway : MonoBehaviour
 
     #region PRIVATE_FIELDS
     private Quaternion originRotation = new();
+
+    private bool initialized = false;
     #endregion
 
     #region UNITY_CALLS
@@ -20,6 +22,8 @@ public class Sway : MonoBehaviour
     public void Init()
     {
         originRotation = transform.localRotation;
+
+        initialized = true;
     }
     #endregion
 
@@ -30,6 +34,11 @@ public class Sway : MonoBehaviour
     #region PRIVATE_METHODS
     public void UpdateSway()
     {
+        if(!initialized)
+        {
+            return;
+        }
+
         float xMouse = Input.GetAxis("Mouse X");
         float yMouse = Input.GetAxis("Mouse Y");
 

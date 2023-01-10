@@ -16,5 +16,5 @@ MonoBehaviour:
   rateOfFire: 0.1
   reloadTime: 1.5
   maxAmmo: 90
+  currentMaxAmmo: 90
   maxMagazineSize: 30
-  modelPrefab: {fileID: 1996171761670672035, guid: 2947fd6d2372f89439d3fee84ec7bdba, type: 3}

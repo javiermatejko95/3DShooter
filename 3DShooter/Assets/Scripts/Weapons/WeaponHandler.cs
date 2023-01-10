@@ -5,24 +5,31 @@ using UnityEngine;
 public class WeaponHandler : MonoBehaviour
 {
     #region SERIALIZED_FIELDS
-    [SerializeField] private WeaponSO[] weapons = null;
+    [SerializeField] private GameObject[] weaponsPrefab = null;
     #endregion
 
     #region PRIVATE_FIELDS
+    private List<Weapon> weapons = new();
 
-    #endregion
-
-    #region UNITY_CALLS
-    private void Update()
-    {
-
-    }
+    private int currentIndex = -1;
     #endregion
 
     #region INIT
-    public void Init()
+    public void Init(Transform parent)
     {
+        currentIndex = -1;
 
+        for(int i = 0; i < weaponsPrefab.Length; i++)
+        {
+            GameObject weaponGO = Instantiate(weaponsPrefab[i], parent);
+
+            Weapon weapon = weaponGO.GetComponent<Weapon>();
+
+            weapon.Init();
+            weapon.Toggle(false);
+
+            weapons.Add(weapon);
+        }
     }
     #endregion
 
@@ -31,9 +38,18 @@ public class WeaponHandler : MonoBehaviour
     {
         Weapon weapon = null;
 
-        if(index >= 0 || index < weapons.Length)
+        if(currentIndex >= 0 && currentIndex < weapons.Count)
         {
-            weapon = new Weapon(weapons[index]);
+            weapons[currentIndex].Toggle(false);
+        }
+
+        if(index >= 0 || index < weapons.Count)
+        {
+            weapon = weapons[index];
+
+            weapons[index].Toggle(true);
+
+            currentIndex = index;
         }
 
         return weapon;
@@ -43,20 +59,27 @@ public class WeaponHandler : MonoBehaviour
     {
         Weapon weapon = null;
 
-        for(int i = 0; i < weapons.Length; i++)
+        for(int i = 0; i < weapons.Count; i++)
         {
-            if(weapons[i].Id == id)
+            if(weapons[i].WeaponModel.Id == id)
             {
-                weapon = new Weapon(weapons[i]);
+                weapons[currentIndex].Toggle(false);
+
+                weapon = weapons[i];
+
+                weapons[i].Toggle(true);
+
+                currentIndex = i;
                 break;
             }
         }
 
         return weapon;
     }
-    #endregion
 
-    #region PRIVATE_METHODS
-
+    public int GetCurrentWeaponIndex()
+    {
+        return currentIndex;
+    }
     #endregion
 }

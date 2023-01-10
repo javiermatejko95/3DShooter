@@ -507,10 +507,11 @@ MonoBehaviour:
   reloadTimer: {fileID: 1491110495756273437}
   recoil: {fileID: 1491110493786032655}
   recoilCamera: {fileID: 1491110495680518052}
-  weaponContainer: {fileID: 1491110494113343775}
   aimDownSight: {fileID: 1491110493827731851}
   reload: {fileID: 5512489653592745285}
   sway: {fileID: 1491110494187441232}
+  keys: 310000003200000033000000
+  weaponContainer: {fileID: 1491110494113343775}
 --- !u!1 &1491110495551396003
 GameObject:
   m_ObjectHideFlags: 0
@@ -892,3 +893,4 @@ MonoBehaviour:
   originalPosition: {fileID: 8934670999693218225}
   reloadingPosition: {fileID: 3276004292758906172}
   speed: 10
+  rotationAngle: 10

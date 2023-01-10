@@ -1,73 +1,96 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class WeaponController : MonoBehaviour
 {
     #region EXPOSED_FIELDS
+    [Header("Handlers")]
     [SerializeField] private WeaponHandler weaponHandler = null;
+
+    [Space, Header("Timers")]
     [SerializeField] private Timer weaponTimer = null;
     [SerializeField] private Timer reloadTimer = null;
+
+    [Space, Header("Recoil")]
     [SerializeField] private Recoil recoil = null;
     [SerializeField] private RecoilCamera recoilCamera = null;
 
-    [SerializeField] private GameObject weaponContainer = null;
-
+    [Space, Header("Aim Down Sight")]
     [SerializeField] private AimDownSight aimDownSight = null;
+
+    [Space, Header("Reload")]
     [SerializeField] private Reload reload = null;
+
+    [Space, Header("Sway")]
     [SerializeField] private Sway sway = null;
+
+    [Space, Header("Input")]
+    [SerializeField] private KeyCode[] keys = null;
+    
+    [SerializeField] private GameObject weaponContainer = null;
     #endregion
 
     #region PRIVATE_FIELDS
-    private Camera camera = null;
-
-    private PlayerUIActions playerUIActions = null;
+    private Camera camera = null;    
 
     private Weapon selectedWeapon = null;
+    private WeaponModel selectedWeaponModel = null;
 
     private bool canShoot = false;
-    private bool isReloading = false;
+    private bool isReloading = false;    
+
+    private bool initialized = false;
+    #endregion
+
+    #region ACTIONS
+    private PlayerUIActions playerUIActions = null;
 
     private RecoilActions recoilActions = null;
+    private AimDownSightActions aimDownSightActions = null;
     #endregion
 
     #region UNITY_CALLS
     private void Update()
     {
+        SwitchWeapon();
+
         if(Input.GetKeyDown(KeyCode.R) && !isReloading)
         {
-            if(selectedWeapon.MaxAmmo > 0 && selectedWeapon.CurrentAmmo < selectedWeapon.MaxMagazineSize)
+            if(selectedWeaponModel.CurrentMaxAmmo > 0 && selectedWeaponModel.CurrentAmmo < selectedWeaponModel.MaxMagazineSize)
             {
                 CancelShooting();
                 StartReloading();
-                return;
             }            
         }
 
         if(!isReloading)
         {
             sway.UpdateSway();
-            aimDownSight.UpdateAimDownSight();
+            aimDownSightActions.onUpdate?.Invoke();
+
+            if (!aimDownSightActions.onGetIsAiming.Invoke())
+            {
+                reload.UpdateReload();
+            }
 
             if (Input.GetMouseButtonDown(1))
             {
-                aimDownSight.SetIsAiming(true);
+                aimDownSightActions.onSetIsAiming?.Invoke(true);
             }
 
             if (Input.GetMouseButtonUp(1))
             {
-                aimDownSight.SetIsAiming(false);
+                aimDownSightActions.onSetIsAiming?.Invoke(true);
             }
 
             if (Input.GetMouseButton(0))
             {
                 Shoot();
-            }
+            }            
         }
         else
         {
-            aimDownSight.SetIsAiming(false);
-            aimDownSight.UpdateFOV();
+            aimDownSightActions.onSetIsAiming?.Invoke(false);
+            aimDownSightActions.onUpdateFOV?.Invoke();
             reload.UpdateReload();
         }
     }
@@ -78,6 +101,11 @@ public class WeaponController : MonoBehaviour
     {
         this.camera = Camera.main;
         this.playerUIActions = playerUIActions;
+        this.aimDownSightActions = aimDownSight.GetActions();
+
+        weaponHandler.Init(weaponContainer.transform);
+
+        SetWeaponByIndex(0);
 
         recoil.Init();
         sway.Init();
@@ -85,7 +113,7 @@ public class WeaponController : MonoBehaviour
         recoilActions = recoil.GetActions();
         recoilCamera.Init(recoilActions);
 
-        SetWeaponById(WeaponConstants.idSMG);
+        initialized = true;
     }
     #endregion
 
@@ -93,20 +121,54 @@ public class WeaponController : MonoBehaviour
     public void SetWeaponById(string id)
     {
         selectedWeapon = weaponHandler.GetWeaponById(id);
+        selectedWeaponModel = selectedWeapon.WeaponModel;
 
-        Transform weaponPosition = Instantiate(selectedWeapon.ModelPrefab, weaponContainer.transform).transform;
+        Transform weaponPosition = selectedWeapon.transform;
 
         aimDownSight.Init(weaponPosition, camera);
         reload.Init(weaponPosition);
 
-        playerUIActions.onUpdateAmmoText?.Invoke(selectedWeapon.CurrentAmmo, selectedWeapon.MaxAmmo);
+        playerUIActions.onUpdateAmmoText?.Invoke(selectedWeaponModel.CurrentAmmo, selectedWeaponModel.CurrentMaxAmmo);
 
-        weaponTimer.Init(selectedWeapon.RateOfFire, () =>
+        weaponTimer.Init(selectedWeaponModel.RateOfFire, () =>
         {
             ToggleShooting(true);
         });
 
-        reloadTimer.Init(selectedWeapon.ReloadTime, () =>
+        reloadTimer.Init(selectedWeaponModel.ReloadTime, () =>
+        {
+            Reload();
+            ToggleShooting(true);
+            ToggleReloading(false);
+            reload.SetIsReloading(false);
+        });
+
+        ToggleShooting(true);
+    }
+
+    public void SetWeaponByIndex(int index)
+    {
+        if(weaponHandler.GetCurrentWeaponIndex() == index)
+        {
+            return;
+        }
+
+        selectedWeapon = weaponHandler.GetWeaponByIndex(index);
+        selectedWeaponModel = selectedWeapon.WeaponModel;
+
+        Transform weaponPosition = selectedWeapon.transform;
+
+        aimDownSight.Init(weaponPosition, camera);
+        reload.Init(weaponPosition);
+
+        playerUIActions.onUpdateAmmoText?.Invoke(selectedWeaponModel.CurrentAmmo, selectedWeaponModel.CurrentMaxAmmo);
+
+        weaponTimer.Init(selectedWeaponModel.RateOfFire, () =>
+        {
+            ToggleShooting(true);
+        });
+
+        reloadTimer.Init(selectedWeaponModel.ReloadTime, () =>
         {
             Reload();
             ToggleShooting(true);
@@ -127,12 +189,12 @@ public class WeaponController : MonoBehaviour
         }
 
         recoilActions.onRecoil?.Invoke();
-        selectedWeapon.CurrentAmmo--;
+        selectedWeaponModel.CurrentAmmo--;
 
         ToggleShooting(false);
         weaponTimer.ToggleTimer(true);
 
-        playerUIActions.onUpdateAmmoText?.Invoke(selectedWeapon.CurrentAmmo, selectedWeapon.MaxAmmo);
+        playerUIActions.onUpdateAmmoText?.Invoke(selectedWeaponModel.CurrentAmmo, selectedWeaponModel.CurrentMaxAmmo);
 
         RaycastHit hit;
         if (Physics.Raycast(camera.transform.position, camera.transform.forward, out hit, 100f))
@@ -140,11 +202,11 @@ public class WeaponController : MonoBehaviour
             Debug.Log(hit.transform.name);
         }
 
-        if(selectedWeapon.CurrentAmmo <= 0)
+        if(selectedWeaponModel.CurrentAmmo <= 0)
         {
             CancelShooting();
 
-            if (selectedWeapon.MaxAmmo > 0)
+            if (selectedWeaponModel.CurrentMaxAmmo > 0)
             {
                 //start animation                
                 StartReloading();
@@ -154,26 +216,26 @@ public class WeaponController : MonoBehaviour
 
     private void Reload()
     {
-        int currAmmoAux = selectedWeapon.MaxMagazineSize - selectedWeapon.CurrentAmmo;
-        int maxAmmoAux = selectedWeapon.MaxAmmo - currAmmoAux;
+        int currAmmoAux = selectedWeaponModel.MaxMagazineSize - selectedWeaponModel.CurrentAmmo;
+        int maxAmmoAux = selectedWeaponModel.CurrentMaxAmmo - currAmmoAux;
 
         if(maxAmmoAux >= 0)
         {
-            selectedWeapon.CurrentAmmo += currAmmoAux;
-            selectedWeapon.MaxAmmo -= currAmmoAux;
+            selectedWeaponModel.CurrentAmmo += currAmmoAux;
+            selectedWeaponModel.CurrentMaxAmmo -= currAmmoAux;
         }
         else
         {
-            selectedWeapon.CurrentAmmo += selectedWeapon.MaxAmmo;
-            selectedWeapon.MaxAmmo = 0;
+            selectedWeaponModel.CurrentAmmo += selectedWeaponModel.CurrentMaxAmmo;
+            selectedWeaponModel.CurrentMaxAmmo = 0;
         }     
 
-        playerUIActions.onUpdateAmmoText?.Invoke(selectedWeapon.CurrentAmmo, selectedWeapon.MaxAmmo);
+        playerUIActions.onUpdateAmmoText?.Invoke(selectedWeaponModel.CurrentAmmo, selectedWeaponModel.CurrentMaxAmmo);
     }
 
     private void StartReloading()
     {
-        if(selectedWeapon.MaxAmmo > 0)
+        if(selectedWeaponModel.CurrentMaxAmmo > 0)
         {
             reload.SetIsReloading(true);
             reloadTimer.ToggleTimer(true);
@@ -181,10 +243,40 @@ public class WeaponController : MonoBehaviour
         }        
     }
 
+    private void StopReloading()
+    {
+        if(!isReloading)
+        {
+            return;
+        }
+
+        reload.SetIsReloading(false);
+        reloadTimer.ToggleTimer(false);
+        ToggleReloading(false);
+        reloadTimer.RestartTimer();
+    }
+
     private void CancelShooting()
     {
         weaponTimer.ToggleTimer(false);
         weaponTimer.RestartTimer();        
+    }
+
+    private void SwitchWeapon()
+    {
+        if(!initialized)
+        {
+            return;
+        }
+
+        for(int i = 0; i < keys.Length; i++)
+        {
+            if(Input.GetKeyDown(keys[i]))
+            {
+                StopReloading();
+                SetWeaponByIndex(i);
+            }
+        }
     }
 
     private void ToggleShooting(bool status)
