@@ -36,7 +36,6 @@ public class WeaponController : MonoBehaviour
     private WeaponModel selectedWeaponModel = null;
 
     private bool canShoot = false;
-    private bool isReloading = false;    
 
     private bool initialized = false;
     #endregion
@@ -44,6 +43,7 @@ public class WeaponController : MonoBehaviour
     #region ACTIONS
     private PlayerUIActions playerUIActions = null;
 
+    private ReloadActions reloadActions = null;
     private RecoilActions recoilActions = null;
     private AimDownSightActions aimDownSightActions = null;
     #endregion
@@ -53,7 +53,7 @@ public class WeaponController : MonoBehaviour
     {
         SwitchWeapon();
 
-        if(Input.GetKeyDown(KeyCode.R) && !isReloading)
+        if(Input.GetKeyDown(KeyCode.R) && !reloadActions.onGetIsReloading.Invoke())
         {
             if(selectedWeaponModel.CurrentMaxAmmo > 0 && selectedWeaponModel.CurrentAmmo < selectedWeaponModel.MaxMagazineSize)
             {
@@ -62,14 +62,14 @@ public class WeaponController : MonoBehaviour
             }            
         }
 
-        if(!isReloading)
+        if(!reloadActions.onGetIsReloading.Invoke())
         {
             sway.UpdateSway();
             aimDownSightActions.onUpdate?.Invoke();
 
             if (!aimDownSightActions.onGetIsAiming.Invoke())
             {
-                reload.UpdateReload();
+                reloadActions.onUpdate?.Invoke();
             }
 
             if (Input.GetMouseButtonDown(1))
@@ -79,7 +79,7 @@ public class WeaponController : MonoBehaviour
 
             if (Input.GetMouseButtonUp(1))
             {
-                aimDownSightActions.onSetIsAiming?.Invoke(true);
+                aimDownSightActions.onSetIsAiming?.Invoke(false);
             }
 
             if (Input.GetMouseButton(0))
@@ -91,7 +91,7 @@ public class WeaponController : MonoBehaviour
         {
             aimDownSightActions.onSetIsAiming?.Invoke(false);
             aimDownSightActions.onUpdateFOV?.Invoke();
-            reload.UpdateReload();
+            reloadActions.onUpdate?.Invoke();
         }
     }
     #endregion
@@ -100,8 +100,10 @@ public class WeaponController : MonoBehaviour
     public void Init(PlayerUIActions playerUIActions)
     {
         this.camera = Camera.main;
+
         this.playerUIActions = playerUIActions;
         this.aimDownSightActions = aimDownSight.GetActions();
+        this.reloadActions = reload.GetActions();
 
         weaponHandler.Init(weaponContainer.transform);
 
@@ -139,8 +141,7 @@ public class WeaponController : MonoBehaviour
         {
             Reload();
             ToggleShooting(true);
-            ToggleReloading(false);
-            reload.SetIsReloading(false);
+            reloadActions.onSetIsReloading?.Invoke(false);
         });
 
         ToggleShooting(true);
@@ -172,8 +173,7 @@ public class WeaponController : MonoBehaviour
         {
             Reload();
             ToggleShooting(true);
-            ToggleReloading(false);
-            reload.SetIsReloading(false);
+            reloadActions.onSetIsReloading?.Invoke(false);
         });
 
         ToggleShooting(true);
@@ -183,7 +183,7 @@ public class WeaponController : MonoBehaviour
     #region PRIVATE_METHODS
     private void Shoot()
     {
-        if(!canShoot || isReloading)
+        if(!canShoot || reloadActions.onGetIsReloading.Invoke())
         {
             return;
         }
@@ -237,22 +237,20 @@ public class WeaponController : MonoBehaviour
     {
         if(selectedWeaponModel.CurrentMaxAmmo > 0)
         {
-            reload.SetIsReloading(true);
+            reloadActions.onSetIsReloading?.Invoke(true);
             reloadTimer.ToggleTimer(true);
-            ToggleReloading(true);
         }        
     }
 
     private void StopReloading()
     {
-        if(!isReloading)
+        if(!reloadActions.onGetIsReloading.Invoke())
         {
             return;
         }
 
-        reload.SetIsReloading(false);
+        reloadActions.onSetIsReloading?.Invoke(false);
         reloadTimer.ToggleTimer(false);
-        ToggleReloading(false);
         reloadTimer.RestartTimer();
     }
 
@@ -282,11 +280,6 @@ public class WeaponController : MonoBehaviour
     private void ToggleShooting(bool status)
     {
         canShoot = status;
-    }
-
-    private void ToggleReloading(bool status)
-    {
-        isReloading = status;
     }
     #endregion
 }

@@ -1,4 +1,13 @@
+using System;
+
 using UnityEngine;
+
+public class ReloadActions
+{
+    public Action onUpdate = null;
+    public Action<bool> onSetIsReloading = null;
+    public Func<bool> onGetIsReloading = null;
+}
 
 public class Reload : MonoBehaviour
 {
@@ -17,24 +26,35 @@ public class Reload : MonoBehaviour
     private Quaternion originRotation = new();
 
     private bool initialized = false;
+
+    private ReloadActions reloadActions = new();
     #endregion
 
-    public void SetIsReloading(bool state)
-    {
-        isReloading = state;
-    }
-
+    #region INIT
     public void Init(Transform weaponPosition)
     {
+        reloadActions.onUpdate = UpdateReload;
+        reloadActions.onSetIsReloading = SetIsReloading;
+        reloadActions.onGetIsReloading = GetIsReloading;
+
         this.weaponPosition = weaponPosition;
         originRotation = Quaternion.identity;
 
         initialized = true;
     }
+    #endregion
 
-    public void UpdateReload()
+    #region PUBLIC_METHODS
+    public ReloadActions GetActions()
     {
-        if(!initialized)
+        return reloadActions;
+    }
+    #endregion
+
+    #region PRIVATE_METHODS
+    private void UpdateReload()
+    {
+        if (!initialized)
         {
             return;
         }
@@ -58,4 +78,15 @@ public class Reload : MonoBehaviour
             transform.localRotation = Quaternion.Lerp(transform.localRotation, targetRotation, speed * Time.deltaTime);
         }
     }
+
+    private void SetIsReloading(bool state)
+    {
+        isReloading = state;
+    }
+
+    private bool GetIsReloading()
+    {
+        return isReloading;
+    }    
+    #endregion    
 }

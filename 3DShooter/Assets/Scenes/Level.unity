@@ -607,11 +607,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &1468437994 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 8934670999693218225, guid: 68b07042f0ee0f0428e8688329ab762c, type: 3}
-  m_PrefabInstance: {fileID: 1491110493956273021}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1555085015
 GameObject:
   m_ObjectHideFlags: 0
@@ -1062,41 +1057,5 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
-    - target: {fileID: 3276004292758906172, guid: 68b07042f0ee0f0428e8688329ab762c, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3276004292758906172, guid: 68b07042f0ee0f0428e8688329ab762c, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3276004292758906172, guid: 68b07042f0ee0f0428e8688329ab762c, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3276004292758906172, guid: 68b07042f0ee0f0428e8688329ab762c, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3276004292758906172, guid: 68b07042f0ee0f0428e8688329ab762c, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3276004292758906172, guid: 68b07042f0ee0f0428e8688329ab762c, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5512489653592745285, guid: 68b07042f0ee0f0428e8688329ab762c, type: 3}
-      propertyPath: rotation
-      value: 100
-      objectReference: {fileID: 0}
-    - target: {fileID: 5512489653592745285, guid: 68b07042f0ee0f0428e8688329ab762c, type: 3}
-      propertyPath: rotationAngle
-      value: 35
-      objectReference: {fileID: 0}
-    - target: {fileID: 5512489653592745285, guid: 68b07042f0ee0f0428e8688329ab762c, type: 3}
-      propertyPath: originalPosition
-      value: 
-      objectReference: {fileID: 1468437994}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 68b07042f0ee0f0428e8688329ab762c, type: 3}

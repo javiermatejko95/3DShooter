@@ -63,7 +63,7 @@ public class AimDownSight : MonoBehaviour
     {
         if(isAiming)
         {
-            if(currentFOV >= adsFOV)
+            if(currentFOV > adsFOV)
             {
                 currentFOV -= Time.deltaTime * speedFOV;
                 camera.fieldOfView = currentFOV;
@@ -71,10 +71,10 @@ public class AimDownSight : MonoBehaviour
         }
         else
         {
-            if (currentFOV <= defaultFOV)
+            if (currentFOV < defaultFOV)
             {
                 currentFOV += Time.deltaTime * speedFOV;
-                camera.fieldOfView = currentFOV;
+                camera.fieldOfView = currentFOV;                
             }
         }        
     }
