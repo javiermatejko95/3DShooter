@@ -184,8 +184,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5bad9776379bab48bfccc57bf380e75, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  intensity: 3
-  smooth: 10
+  intensity: 1
+  smooth: 5
 --- !u!1 &1491110494347976204
 GameObject:
   m_ObjectHideFlags: 0

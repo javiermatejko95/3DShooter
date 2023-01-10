@@ -43,6 +43,8 @@ public class WeaponController : MonoBehaviour
     #region ACTIONS
     private PlayerUIActions playerUIActions = null;
 
+    private WeaponActions weaponActions = null;
+    private SwayActions swayActions = null;
     private ReloadActions reloadActions = null;
     private RecoilActions recoilActions = null;
     private AimDownSightActions aimDownSightActions = null;
@@ -51,6 +53,11 @@ public class WeaponController : MonoBehaviour
     #region UNITY_CALLS
     private void Update()
     {
+        if(!initialized)
+        {
+            return;
+        }
+
         SwitchWeapon();
 
         if(Input.GetKeyDown(KeyCode.R) && !reloadActions.onGetIsReloading.Invoke())
@@ -64,7 +71,7 @@ public class WeaponController : MonoBehaviour
 
         if(!reloadActions.onGetIsReloading.Invoke())
         {
-            sway.UpdateSway();
+            swayActions.onUpdate?.Invoke();
             aimDownSightActions.onUpdate?.Invoke();
 
             if (!aimDownSightActions.onGetIsAiming.Invoke())
@@ -75,11 +82,13 @@ public class WeaponController : MonoBehaviour
             if (Input.GetMouseButtonDown(1))
             {
                 aimDownSightActions.onSetIsAiming?.Invoke(true);
+                recoilActions.onToggleIsAiming?.Invoke(true);
             }
 
             if (Input.GetMouseButtonUp(1))
             {
                 aimDownSightActions.onSetIsAiming?.Invoke(false);
+                recoilActions.onToggleIsAiming?.Invoke(false);
             }
 
             if (Input.GetMouseButton(0))
@@ -90,6 +99,7 @@ public class WeaponController : MonoBehaviour
         else
         {
             aimDownSightActions.onSetIsAiming?.Invoke(false);
+            recoilActions.onToggleIsAiming?.Invoke(false);
             aimDownSightActions.onUpdateFOV?.Invoke();
             reloadActions.onUpdate?.Invoke();
         }
@@ -104,16 +114,17 @@ public class WeaponController : MonoBehaviour
         this.playerUIActions = playerUIActions;
         this.aimDownSightActions = aimDownSight.GetActions();
         this.reloadActions = reload.GetActions();
+        this.swayActions = sway.GetActions();
 
         weaponHandler.Init(weaponContainer.transform);
-
-        SetWeaponByIndex(0);
 
         recoil.Init();
         sway.Init();
 
         recoilActions = recoil.GetActions();
         recoilCamera.Init(recoilActions);
+
+        SetWeaponByIndex(0);
 
         initialized = true;
     }
@@ -134,17 +145,17 @@ public class WeaponController : MonoBehaviour
 
         weaponTimer.Init(selectedWeaponModel.RateOfFire, () =>
         {
-            ToggleShooting(true);
+            ToggleCanShoot(true);
         });
 
         reloadTimer.Init(selectedWeaponModel.ReloadTime, () =>
         {
             Reload();
-            ToggleShooting(true);
+            ToggleCanShoot(true);
             reloadActions.onSetIsReloading?.Invoke(false);
         });
 
-        ToggleShooting(true);
+        ToggleCanShoot(true);
     }
 
     public void SetWeaponByIndex(int index)
@@ -157,6 +168,9 @@ public class WeaponController : MonoBehaviour
         selectedWeapon = weaponHandler.GetWeaponByIndex(index);
         selectedWeaponModel = selectedWeapon.WeaponModel;
 
+        recoilActions.onSetRecoilConfig?.Invoke(selectedWeaponModel.RecoilConfig);
+        weaponActions = selectedWeapon.GetActions();
+
         Transform weaponPosition = selectedWeapon.transform;
 
         aimDownSight.Init(weaponPosition, camera);
@@ -166,17 +180,17 @@ public class WeaponController : MonoBehaviour
 
         weaponTimer.Init(selectedWeaponModel.RateOfFire, () =>
         {
-            ToggleShooting(true);
+            ToggleCanShoot(true);
         });
 
         reloadTimer.Init(selectedWeaponModel.ReloadTime, () =>
         {
             Reload();
-            ToggleShooting(true);
+            ToggleCanShoot(true);
             reloadActions.onSetIsReloading?.Invoke(false);
         });
 
-        ToggleShooting(true);
+        ToggleCanShoot(true);
     }
     #endregion
 
@@ -189,9 +203,9 @@ public class WeaponController : MonoBehaviour
         }
 
         recoilActions.onRecoil?.Invoke();
-        selectedWeaponModel.CurrentAmmo--;
+        weaponActions.onShoot?.Invoke();
 
-        ToggleShooting(false);
+        ToggleCanShoot(false);
         weaponTimer.ToggleTimer(true);
 
         playerUIActions.onUpdateAmmoText?.Invoke(selectedWeaponModel.CurrentAmmo, selectedWeaponModel.CurrentMaxAmmo);
@@ -207,8 +221,7 @@ public class WeaponController : MonoBehaviour
             CancelShooting();
 
             if (selectedWeaponModel.CurrentMaxAmmo > 0)
-            {
-                //start animation                
+            {     
                 StartReloading();
             }            
         }
@@ -277,7 +290,7 @@ public class WeaponController : MonoBehaviour
         }
     }
 
-    private void ToggleShooting(bool status)
+    private void ToggleCanShoot(bool status)
     {
         canShoot = status;
     }

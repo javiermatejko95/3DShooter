@@ -4,6 +4,8 @@ using UnityEngine;
 public class RecoilActions
 {
     public Action onRecoil = null;
+    public Action<RecoilConfig> onSetRecoilConfig = null;
+    public Action<bool> onToggleIsAiming = null;
 }
 
 public class Recoil : MonoBehaviour
@@ -20,13 +22,14 @@ public class Recoil : MonoBehaviour
     [SerializeField] private float rotationalReturnSpeed = 38f;
 
     [Space, Header("Amount Settings")]
-    [SerializeField] private Vector3 recoilRotation = new Vector3(10f, 5f, 7f);
-    [SerializeField] private Vector3 recoilKickBack = new Vector3(0.015f, 0f, -0.2f);
-    [SerializeField] private Vector3 recoilRotationAim = new Vector3(10f, 4f, 6f);
-    [SerializeField] private Vector3 recoilKickBackAim = new Vector3(0.015f, 0f, -0.2f);
+    [SerializeField] private RecoilConfig recoilConfig = default;
+    //[SerializeField] private Vector3 recoilRotation = new Vector3(10f, 5f, 7f);
+    //[SerializeField] private Vector3 recoilKickBack = new Vector3(0.015f, 0f, -0.2f);
+    //[SerializeField] private Vector3 recoilRotationAim = new Vector3(10f, 4f, 6f);
+    //[SerializeField] private Vector3 recoilKickBackAim = new Vector3(0.015f, 0f, -0.2f);
 
     [Space, Header("State")]
-    [SerializeField] private bool aiming = false;
+    [SerializeField] private bool isAiming = false;
     #endregion
 
     #region PRIVATE_FIELDS
@@ -53,6 +56,8 @@ public class Recoil : MonoBehaviour
     public void Init()
     {
         recoilActions.onRecoil = Fire;
+        recoilActions.onSetRecoilConfig = SetConfig;
+        recoilActions.onToggleIsAiming = ToggleIsAiming;
     }
     #endregion
 
@@ -66,16 +71,26 @@ public class Recoil : MonoBehaviour
     #region PRIVATE_METHODS
     private void Fire()
     {
-        if(aiming)
+        if(isAiming)
         {
-            rotationalRecoil += new Vector3(-recoilRotationAim.x, UnityEngine.Random.Range(-recoilRotationAim.y, recoilRotationAim.y), UnityEngine.Random.Range(-recoilRotationAim.z, recoilRotationAim.z));
-            positionalRecoil += new Vector3(UnityEngine.Random.Range(-recoilKickBackAim.x, recoilKickBackAim.x), UnityEngine.Random.Range(-recoilKickBackAim.y, recoilKickBackAim.y), recoilKickBackAim.z);
+            rotationalRecoil += new Vector3(-recoilConfig.RecoilRotationAim.x, UnityEngine.Random.Range(-recoilConfig.RecoilRotationAim.y, recoilConfig.RecoilRotationAim.y), UnityEngine.Random.Range(-recoilConfig.RecoilRotationAim.z, recoilConfig.RecoilRotationAim.z));
+            positionalRecoil += new Vector3(UnityEngine.Random.Range(-recoilConfig.RecoilKickBackAim.x, recoilConfig.RecoilKickBackAim.x), UnityEngine.Random.Range(-recoilConfig.RecoilKickBackAim.y, recoilConfig.RecoilKickBackAim.y), recoilConfig.RecoilKickBackAim.z);
         }
         else
         {
-            rotationalRecoil += new Vector3(-recoilRotation.x, UnityEngine.Random.Range(-recoilRotation.y, recoilRotation.y), UnityEngine.Random.Range(-recoilRotation.z, recoilRotation.z));
-            positionalRecoil += new Vector3(UnityEngine.Random.Range(-recoilKickBack.x, recoilKickBack.x), UnityEngine.Random.Range(-recoilKickBack.y, recoilKickBack.y), recoilKickBack.z);
+            rotationalRecoil += new Vector3(-recoilConfig.RecoilRotation.x, UnityEngine.Random.Range(-recoilConfig.RecoilRotation.y, recoilConfig.RecoilRotation.y), UnityEngine.Random.Range(-recoilConfig.RecoilRotation.z, recoilConfig.RecoilRotation.z));
+            positionalRecoil += new Vector3(UnityEngine.Random.Range(-recoilConfig.RecoilKickBack.x, recoilConfig.RecoilKickBack.x), UnityEngine.Random.Range(-recoilConfig.RecoilKickBack.y, recoilConfig.RecoilKickBack.y), recoilConfig.RecoilKickBack.z);
         }
+    }
+
+    private void SetConfig(RecoilConfig recoilConfig)
+    {
+        this.recoilConfig = recoilConfig;
+    }
+
+    private void ToggleIsAiming(bool status)
+    {
+        isAiming = status;
     }
     #endregion
 }

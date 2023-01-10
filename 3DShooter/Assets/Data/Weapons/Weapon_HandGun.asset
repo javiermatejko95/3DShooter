@@ -13,8 +13,13 @@ MonoBehaviour:
   m_Name: Weapon_HandGun
   m_EditorClassIdentifier: 
   id: HandGun
-  rateOfFire: 0.5
-  reloadTime: 0.5
+  rateOfFire: 0.2
+  reloadTime: 1
   maxAmmo: 120
+  currentMaxAmmo: 120
   maxMagazineSize: 12
-  modelPrefab: {fileID: 5384081396781330648, guid: f3571ea07f3156e4da039de3220414b3, type: 3}
+  recoilConfig:
+    RecoilRotation: {x: 200, y: 5, z: 7}
+    RecoilKickBack: {x: 0.015, y: 0, z: -0.3}
+    RecoilRotationAim: {x: 10, y: 4, z: 6}
+    RecoilKickBackAim: {x: 0.015, y: 0, z: -0.2}

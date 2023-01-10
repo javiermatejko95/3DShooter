@@ -1,6 +1,11 @@
 using System;
 using UnityEngine;
 
+public class SwayActions
+{
+    public Action onUpdate = null;
+}
+
 public class Sway : MonoBehaviour
 {
     #region EXPOSED_FIELDS
@@ -11,34 +16,28 @@ public class Sway : MonoBehaviour
     #region PRIVATE_FIELDS
     private Quaternion originRotation = new();
 
-    private bool initialized = false;
-    #endregion
-
-    #region UNITY_CALLS
-
+    private SwayActions swayActions = new();
     #endregion
 
     #region INIT
     public void Init()
     {
-        originRotation = transform.localRotation;
+        swayActions.onUpdate = UpdateSway;
 
-        initialized = true;
+        originRotation = transform.localRotation;
     }
     #endregion
 
     #region PUBLIC_METHODS
-
+    public SwayActions GetActions()
+    {
+        return swayActions;
+    }
     #endregion
 
     #region PRIVATE_METHODS
-    public void UpdateSway()
+    private void UpdateSway()
     {
-        if(!initialized)
-        {
-            return;
-        }
-
         float xMouse = Input.GetAxis("Mouse X");
         float yMouse = Input.GetAxis("Mouse Y");
 

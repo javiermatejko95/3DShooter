@@ -12,7 +12,7 @@ public class WeaponModel
     private int currentMaxAmmo = 90;
     private int currentAmmo = 30;
     private int maxMagazineSize = 30;
-    private GameObject modelPrefab = null;
+    private RecoilConfig recoilConfig = default;
     #endregion
 
     #region PROPERTIES
@@ -23,6 +23,7 @@ public class WeaponModel
     public int CurrentMaxAmmo { get => currentMaxAmmo; set => currentMaxAmmo = value; }
     public int CurrentAmmo { get => currentAmmo; set => currentAmmo = value; }
     public int MaxMagazineSize { get => maxMagazineSize; }
+    public RecoilConfig RecoilConfig { get => recoilConfig; }
     #endregion
 
     #region CONSTRUCTOR
@@ -34,6 +35,7 @@ public class WeaponModel
         maxAmmo = weaponData.MaxAmmo;
         currentAmmo = weaponData.MaxMagazineSize;
         maxMagazineSize = weaponData.MaxMagazineSize;
+        recoilConfig = weaponData.RecoilConfig;
     }
     #endregion
 }
