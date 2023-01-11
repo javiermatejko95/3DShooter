@@ -33,6 +33,7 @@ public class WeaponModel
         rateOfFire = weaponData.RateOfFire;
         reloadTime = weaponData.ReloadTime;
         maxAmmo = weaponData.MaxAmmo;
+        currentMaxAmmo = weaponData.MaxAmmo;
         currentAmmo = weaponData.MaxMagazineSize;
         maxMagazineSize = weaponData.MaxMagazineSize;
         recoilConfig = weaponData.RecoilConfig;

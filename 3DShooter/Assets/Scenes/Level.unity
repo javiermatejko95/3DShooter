@@ -619,7 +619,7 @@ GameObject:
   - component: {fileID: 1555085019}
   - component: {fileID: 1555085018}
   - component: {fileID: 1555085017}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Floor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1001,14 +1001,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1491110493786032655, guid: 68b07042f0ee0f0428e8688329ab762c, type: 3}
-      propertyPath: aiming
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1491110493786032655, guid: 68b07042f0ee0f0428e8688329ab762c, type: 3}
-      propertyPath: isAiming
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 1491110495060403881, guid: 68b07042f0ee0f0428e8688329ab762c, type: 3}
       propertyPath: playerUIController
       value: 

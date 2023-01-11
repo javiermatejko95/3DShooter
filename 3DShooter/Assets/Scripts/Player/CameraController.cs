@@ -14,12 +14,19 @@ public class CameraController : MonoBehaviour
     #region PRIVATE_FIELDS
     private float verticalAngle;
 
+    private float xRotation = 0f;
+
     private float rotationSpeedX;
     private float rotationSpeedY;
-    private float rotationRange = 60.0f;    
+    private float rotationRange = 60.0f;
     #endregion
 
     #region UNITY_CALLS
+    private void Start()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+    }
+
     private void Update()
     {
         RotatePlayer();        
@@ -29,12 +36,14 @@ public class CameraController : MonoBehaviour
     #region PRIVATE_METHODS
     private void RotatePlayer()
     {
-        float horRot = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
-        float verRot = -Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
-        verticalAngle += verRot;
-        verticalAngle = Mathf.Clamp(verticalAngle, -rotationRange, rotationRange);
-        transform.localEulerAngles = new Vector3(verticalAngle, 0, 0);
-        player.Rotate(0, horRot, 0);
+        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
+        float mouseY = -Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
+
+        xRotation += mouseY;
+        xRotation = Mathf.Clamp(xRotation, -rotationRange, rotationRange);
+
+        transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+        player.Rotate(Vector3.up * mouseX);
     }    
     #endregion
 }

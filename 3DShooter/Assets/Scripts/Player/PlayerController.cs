@@ -8,11 +8,7 @@ public class PlayerController : MonoBehaviour
 {
     #region SERIALIZED_FIELDS
     [Header("Movement")]
-    [SerializeField] private float gravityForce;
-    [SerializeField] private float jumpForce;
-    [SerializeField] private float playerSpeed;
-    [SerializeField] private float sprintSpeed;
-    [SerializeField] private bool canJump = true;    
+    [SerializeField] private PlayerMovement playerMovement = null;
 
     [Space, Header("Camera")]
     [SerializeField] private Transform playerCamera;
@@ -25,14 +21,21 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region PRIVATE_FIELDS
-    private PlayerUIActions playerUIActions = null;
+    private float gravity;
 
-    private float gravity;    
+    private Vector3 velocity = new();
 
     private bool isCrouching = false;
     private bool isSprinting = false;
 
     private CharacterController cc;
+
+    private bool initialized = false;
+    #endregion
+
+    #region ACTIONS
+    private PlayerUIActions playerUIActions = null;
+    private PlayerMovementActions playerMovementActions = null;
     #endregion
 
     #region UNITY_CALLS
@@ -43,88 +46,27 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        if (cc.isGrounded)
+        if(!initialized)
         {
-            gravity = 0;
-            canJump = true;
-            PlayerJump();
+            return;
         }
-        gravity += gravityForce * Time.deltaTime;
-        canJump = false;
 
-        PlayerMovement();
+        playerMovementActions.onMove?.Invoke();
     }
     #endregion
 
     #region PRIVATE_METHODS
     private void Setup()
     {
+        playerMovement.Init();
         playerUIController.Init();
 
         playerUIActions = playerUIController.GetActions();
-        cc = GetComponent<CharacterController>();
-
-        sprintSpeed = 1f;
-        canJump = true;
-        isCrouching = false;
-        isSprinting = false;
+        playerMovementActions = playerMovement.GetActions();
 
         weaponController.Init(playerUIActions);
-    }
 
-    private void PlayerMovement()
-    {
-        Vector3 mov = Vector3.zero;
-        mov += Vector3.down * gravity;
-        Sprint();
-        Crouch();
-        mov += transform.forward * Input.GetAxis("Vertical") * playerSpeed * sprintSpeed;
-        mov += transform.right * Input.GetAxis("Horizontal") * playerSpeed * sprintSpeed;
-        cc.Move(mov * Time.deltaTime);
-        //MoveAnimations(verticalAxis, horizontalAxis);
-    }
-
-    public void CharacterRotation()
-    {
-        
-    }
-
-    private void PlayerJump()
-    {
-        if (Input.GetButtonDown("Jump") && canJump && !isCrouching)
-        {
-            gravity -= jumpForce;
-            canJump = false;
-        }
-    }
-
-    private void Sprint()
-    {
-        if (Input.GetKey(KeyCode.LeftShift) && !isCrouching)
-        {
-            sprintSpeed = 1.5f;
-            isSprinting = true;
-        }
-        if (Input.GetKeyUp(KeyCode.LeftShift))
-        {
-            sprintSpeed = 1f;
-            isSprinting = false;
-        }
-    }
-    private void Crouch()
-    {
-        if (Input.GetKey(KeyCode.LeftControl) && !isSprinting)
-        {
-            sprintSpeed = 0.5f;
-            playerCamera.transform.localPosition = new Vector3(0, 0, 0);
-            isCrouching = true;
-        }
-        if (Input.GetKeyUp(KeyCode.LeftControl))
-        {
-            sprintSpeed = 1f;
-            playerCamera.transform.localPosition = new Vector3(0, 0.7f, 0);
-            isCrouching = false;
-        }
+        initialized = true;
     }
     #endregion
 }

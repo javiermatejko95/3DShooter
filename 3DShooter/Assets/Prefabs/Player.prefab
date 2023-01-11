@@ -51,11 +51,12 @@ MonoBehaviour:
   rotationalRecoilSpeed: 8
   positionalReturnSpeed: 18
   rotationalReturnSpeed: 38
-  recoilRotation: {x: 10, y: 5, z: 7}
-  recoilKickBack: {x: 0.015, y: 0, z: -0.2}
-  recoilRotationAim: {x: 10, y: 4, z: 6}
-  recoilKickBackAim: {x: 0.015, y: 0, z: -0.2}
-  aiming: 0
+  recoilConfig:
+    RecoilRotation: {x: 0, y: 0, z: 0}
+    RecoilKickBack: {x: 0, y: 0, z: 0}
+    RecoilRotationAim: {x: 0, y: 0, z: 0}
+    RecoilKickBackAim: {x: 0, y: 0, z: 0}
+  isAiming: 0
 --- !u!1 &1491110493827731848
 GameObject:
   m_ObjectHideFlags: 0
@@ -426,6 +427,7 @@ GameObject:
   - component: {fileID: 1491110495060403886}
   - component: {fileID: 1491110495060403880}
   - component: {fileID: 1491110495060403881}
+  - component: {fileID: 8187552172029813779}
   - component: {fileID: 1491110495060403883}
   m_Layer: 0
   m_Name: Player
@@ -449,6 +451,7 @@ Transform:
   - {fileID: 1491110495680518053}
   - {fileID: 1491110495052069474}
   - {fileID: 1491110495663099750}
+  - {fileID: 486053018809701863}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -482,14 +485,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d44a87bf6801e9a448f44ff44d0db2bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gravityForce: 16
-  jumpForce: 6
-  playerSpeed: 7
-  sprintSpeed: 10
-  canJump: 1
+  playerMovement: {fileID: 8187552172029813779}
   playerCamera: {fileID: 1491110494347976201}
   weaponController: {fileID: 1491110495060403883}
   playerUIController: {fileID: 0}
+--- !u!114 &8187552172029813779
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1491110495060403887}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39d1bf816dbe8454dab56a0b4b608221, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gravity: -19.62
+  speed: 8
+  sprintSpeed: 12
+  crouchSpeed: 5
+  jumpHeight: 3
+  groundCheck: {fileID: 486053018809701863}
+  groundDistance: 0.4
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 1024
 --- !u!114 &1491110495060403883
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -894,3 +915,34 @@ MonoBehaviour:
   reloadingPosition: {fileID: 3276004292758906172}
   speed: 10
   rotationAngle: 35
+--- !u!1 &7448552238991923138
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 486053018809701863}
+  m_Layer: 0
+  m_Name: GroundCheck
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &486053018809701863
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7448552238991923138}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -1.009, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1491110495060403886}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

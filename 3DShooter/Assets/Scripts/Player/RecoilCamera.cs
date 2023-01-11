@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -35,6 +36,7 @@ public class RecoilCamera : MonoBehaviour
     public void Init(RecoilActions recoilActions)
     {
         recoilActions.onRecoil += Fire;
+        recoilActions.onToggleIsAiming += SetIsAiming;
 
         initialized = true;
     }
@@ -43,11 +45,16 @@ public class RecoilCamera : MonoBehaviour
     {
         if (isScoping)
         {
-            currentRotation += new Vector3(-recoilRotationScoping.x, Random.Range(-recoilRotationScoping.y, recoilRotationScoping.y), Random.Range(-recoilRotationScoping.z, recoilRotationScoping.z));
+            currentRotation += new Vector3(-recoilRotationScoping.x, UnityEngine.Random.Range(-recoilRotationScoping.y, recoilRotationScoping.y), UnityEngine.Random.Range(-recoilRotationScoping.z, recoilRotationScoping.z));
         }
         else
         {
-            currentRotation += new Vector3(-recoilRotation.x, Random.Range(-recoilRotation.y, recoilRotation.y), Random.Range(-recoilRotation.z, recoilRotation.z));
+            currentRotation += new Vector3(-recoilRotation.x, UnityEngine.Random.Range(-recoilRotation.y, recoilRotation.y), UnityEngine.Random.Range(-recoilRotation.z, recoilRotation.z));
         }
+    }
+
+    private void SetIsAiming(bool status)
+    {
+        isScoping = status;
     }
 }

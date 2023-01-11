@@ -57,7 +57,7 @@ public class Recoil : MonoBehaviour
     {
         recoilActions.onRecoil = Fire;
         recoilActions.onSetRecoilConfig = SetConfig;
-        recoilActions.onToggleIsAiming = ToggleIsAiming;
+        recoilActions.onToggleIsAiming += ToggleIsAiming;
     }
     #endregion
 

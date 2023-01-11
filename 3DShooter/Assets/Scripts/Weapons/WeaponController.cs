@@ -53,6 +53,11 @@ public class WeaponController : MonoBehaviour
     #region UNITY_CALLS
     private void Update()
     {
+        if(Input.GetKeyDown(KeyCode.L))
+        {
+            RechargeCurrentWeapon();
+        }
+
         if(!initialized)
         {
             return;
@@ -295,4 +300,11 @@ public class WeaponController : MonoBehaviour
         canShoot = status;
     }
     #endregion
+
+    private void RechargeCurrentWeapon()
+    {
+        selectedWeaponModel.CurrentAmmo = selectedWeaponModel.MaxMagazineSize;
+        selectedWeaponModel.CurrentMaxAmmo = selectedWeaponModel.MaxAmmo;
+        playerUIActions.onUpdateAmmoText?.Invoke(selectedWeaponModel.CurrentAmmo, selectedWeaponModel.CurrentMaxAmmo);
+    }
 }
