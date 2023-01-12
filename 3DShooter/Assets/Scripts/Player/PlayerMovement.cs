@@ -22,10 +22,15 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Transform groundCheck = null;
     [SerializeField] private float groundDistance = 0.4f;
     [SerializeField] private LayerMask groundMask = default;
+
+    [Space, Header("Crouching")]
+    [SerializeField] private Transform playerBody = null;
     #endregion
 
     #region PRIVATE_FIELDS
     private CharacterController cc;
+
+    private Transform playerCamera = null;
 
     private Vector3 velocity = new();
 
@@ -41,8 +46,10 @@ public class PlayerMovement : MonoBehaviour
     #endregion
 
     #region INIT
-    public void Init()
+    public void Init(Transform camera)
     {
+        this.playerCamera = camera;
+
         cc = GetComponent<CharacterController>();
 
         playerMovementActions.onMove = Move;
@@ -107,13 +114,17 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKey(KeyCode.LeftControl) && !isSprinting)
         {
             currentSpeed = crouchSpeed;
-            //playerCamera.transform.localPosition = new Vector3(0, 0, 0);
+            playerCamera.transform.localPosition = new Vector3(0f, 0f, 0f);
+            playerBody.localScale = new Vector3(1f, 0.5f, 1f);
+            playerBody.localPosition = new Vector3(0f, -0.7f, 0f);
             isCrouching = true;
         }
         if (Input.GetKeyUp(KeyCode.LeftControl))
         {
             currentSpeed = speed;
-            //playerCamera.transform.localPosition = new Vector3(0, 0.7f, 0);
+            playerCamera.transform.localPosition = new Vector3(0f, 0.7f, 0f);
+            playerBody.localScale = new Vector3(1f, 1f, 1f);
+            playerBody.localPosition = new Vector3(0f, 0f, 0f);
             isCrouching = false;
         }
     }

@@ -21,15 +21,6 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region PRIVATE_FIELDS
-    private float gravity;
-
-    private Vector3 velocity = new();
-
-    private bool isCrouching = false;
-    private bool isSprinting = false;
-
-    private CharacterController cc;
-
     private bool initialized = false;
     #endregion
 
@@ -58,7 +49,7 @@ public class PlayerController : MonoBehaviour
     #region PRIVATE_METHODS
     private void Setup()
     {
-        playerMovement.Init();
+        playerMovement.Init(playerCamera);
         playerUIController.Init();
 
         playerUIActions = playerUIController.GetActions();
