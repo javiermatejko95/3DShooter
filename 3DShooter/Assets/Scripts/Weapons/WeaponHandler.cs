@@ -31,6 +31,8 @@ public class WeaponHandler : MonoBehaviour
 
             weapons.Add(weapon);
         }
+
+        weapons[0].WeaponModel.Unlocked = true;
     }
     #endregion
 

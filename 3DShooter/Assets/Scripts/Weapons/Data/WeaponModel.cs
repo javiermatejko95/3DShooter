@@ -12,6 +12,7 @@ public class WeaponModel
     private int currentMaxAmmo = 90;
     private int currentAmmo = 30;
     private int maxMagazineSize = 30;
+    private bool unlocked = false;
     private RecoilConfig recoilConfig = default;
     #endregion
 
@@ -23,6 +24,7 @@ public class WeaponModel
     public int CurrentMaxAmmo { get => currentMaxAmmo; set => currentMaxAmmo = value; }
     public int CurrentAmmo { get => currentAmmo; set => currentAmmo = value; }
     public int MaxMagazineSize { get => maxMagazineSize; }
+    public bool Unlocked { get => unlocked; set => unlocked = value; }
     public RecoilConfig RecoilConfig { get => recoilConfig; }
     #endregion
 
@@ -37,6 +39,7 @@ public class WeaponModel
         currentAmmo = weaponData.MaxMagazineSize;
         maxMagazineSize = weaponData.MaxMagazineSize;
         recoilConfig = weaponData.RecoilConfig;
+        unlocked = weaponData.Unlocked;
     }
     #endregion
 }
