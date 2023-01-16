@@ -84,5 +84,10 @@ public class WeaponHandler : MonoBehaviour
     {
         return currentIndex;
     }
+
+    public List<Weapon> GetWeapons()
+    {
+        return weapons;
+    }
     #endregion
 }

@@ -4,15 +4,11 @@ using UnityEngine;
 
 public class ShopHandler : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    #region EXPOSED_FIELDS
+    [SerializeField] private WeaponHandler weaponHandler = null;
+    #endregion
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    #region PRIVATE_FIELDS
+    private List<Weapon> weapons = new();
+    #endregion
 }

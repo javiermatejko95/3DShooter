@@ -4,15 +4,27 @@ using UnityEngine;
 
 public class ShopController : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    #region EXPOSED_FIELDS
+    [SerializeField] private ShopItemData[] itemsData = null;
+    
+    #endregion
 
-    // Update is called once per frame
-    void Update()
+    #region PRIVATE_FIELDS
+
+    #endregion
+
+    #region UNITY_CALLS
+    private void Awake()
     {
         
     }
+    #endregion
+
+    #region PUBLIC_METHODS
+
+    #endregion
+
+    #region PRIVATE_METHODS
+
+    #endregion
 }
