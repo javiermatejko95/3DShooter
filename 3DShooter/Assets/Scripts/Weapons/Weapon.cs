@@ -6,6 +6,7 @@ using UnityEngine;
 public class WeaponActions
 {
     public Action onShoot = null;
+    public Action<int> onAddAmmo = null;
 }
 
 public class Weapon : MonoBehaviour
@@ -30,6 +31,7 @@ public class Weapon : MonoBehaviour
         weaponModel = new WeaponModel(weaponData);
 
         weaponActions.onShoot = Shoot;
+        weaponActions.onAddAmmo = AddAmmo;
     }
     #endregion
 
@@ -49,6 +51,20 @@ public class Weapon : MonoBehaviour
     private void Shoot()
     {
         weaponModel.CurrentAmmo--;
+    }
+
+    private void AddAmmo(int amount)
+    {
+        int newAmount = weaponModel.CurrentMaxAmmo + amount;
+
+        if(newAmount > weaponModel.MaxAmmo)
+        {
+            weaponModel.CurrentMaxAmmo = weaponModel.MaxAmmo;
+        }
+        else
+        {
+            weaponModel.CurrentMaxAmmo = newAmount;
+        }
     }
     #endregion
 }

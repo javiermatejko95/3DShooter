@@ -9,12 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5546652ee1e8ae24bb2a85dea3e294ff, type: 3}
-  m_Name: ShopItemData_SMG
+  m_Script: {fileID: 11500000, guid: 9294636b55f5ed246b39c4fa702a647a, type: 3}
+  m_Name: GunShopData_Handgun
   m_EditorClassIdentifier: 
-  id: 
-  idParent: 
+  id: handgun
   price: 100
-  amount: 10
-  sprite: {fileID: 21300002, guid: 309ac3eb4cc441349b63128366ca98b6, type: 3}
-  type: 1
+  sprite: {fileID: 21300010, guid: 0bd96f6f4899f644ea1ffd9b4735a5e6, type: 3}
+  type: 0
+  unlocked: 0

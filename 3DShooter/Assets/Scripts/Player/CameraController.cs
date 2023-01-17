@@ -24,7 +24,7 @@ public class CameraController : MonoBehaviour
     #region UNITY_CALLS
     private void Start()
     {
-        Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.lockState = CursorLockMode.Locked;
     }
 
     private void Update()

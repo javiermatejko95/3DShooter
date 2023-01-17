@@ -80,6 +80,23 @@ public class WeaponHandler : MonoBehaviour
         return weapon;
     }
 
+    public Weapon GetWeaponDataById(string id)
+    {
+        Weapon weapon = null;
+
+        for (int i = 0; i < weapons.Count; i++)
+        {
+            if (weapons[i].WeaponModel.Id == id)
+            {
+                weapon = weapons[i];
+
+                break;
+            }
+        }
+
+        return weapon;
+    }
+
     public int GetCurrentWeaponIndex()
     {
         return currentIndex;
@@ -88,6 +105,13 @@ public class WeaponHandler : MonoBehaviour
     public List<Weapon> GetWeapons()
     {
         return weapons;
+    }
+
+    public void AddAmmo(string id, int amount)
+    {
+        Weapon weapon = GetWeaponDataById(id);
+
+        weapon.GetActions().onAddAmmo?.Invoke(amount);
     }
     #endregion
 }
