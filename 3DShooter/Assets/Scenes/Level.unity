@@ -2335,7 +2335,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: ef58f39de36b7704d9a133690efce7a4, type: 2}
   - {fileID: 11400000, guid: d632bd9e383c68941a7691092263f869, type: 2}
   categoryPrefabUI: {fileID: 1339438451687098931, guid: ed67db260f92f6440bbfe8ae263031c2, type: 3}
-  itemPrefabUI: {fileID: 4871924389821404731, guid: 1ea55986a899fbe45b57953180d0e665, type: 3}
+  ammoItemHolderPrefab: {fileID: 5263336693125435921, guid: 1ea55986a899fbe45b57953180d0e665, type: 3}
+  gunItemHolderPrefab: {fileID: 8629683305764806037, guid: 96a11f26d19d6aa40a68eec11e6a7e05, type: 3}
   parentCategoryObject: {fileID: 126096140}
   parentItemObject: {fileID: 840579775}
   shopView: {fileID: 112558163}
