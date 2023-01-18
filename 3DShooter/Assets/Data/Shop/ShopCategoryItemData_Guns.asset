@@ -15,6 +15,7 @@ MonoBehaviour:
   id: guns
   description: guns
   itemsData:
-  - {fileID: 11400000, guid: d743085df5ef1aa46ac860fc7d349a59, type: 2}
-  - {fileID: 11400000, guid: fc6afda86e5b8754ca39eaf4dfa514b5, type: 2}
-  - {fileID: 11400000, guid: bb8c3c1ce74bb2f4d8360b8be2d7718e, type: 2}
+  - {fileID: 11400000, guid: 689b6161fd92f6e4d8dcdd40168f13ed, type: 2}
+  - {fileID: 11400000, guid: e48f7ae8d21e1b245921d71ce999cee0, type: 2}
+  - {fileID: 11400000, guid: e7d3b78ec1e316a40a8612f464ad3d30, type: 2}
+  type: 0

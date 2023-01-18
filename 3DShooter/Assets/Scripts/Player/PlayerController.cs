@@ -11,7 +11,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private PlayerMovement playerMovement = null;
 
     [Space, Header("Camera")]
-    [SerializeField] private Transform playerCamera;
+    [SerializeField] private Transform playerCamera = null;
+    [SerializeField] private PlayerInteraction playerInteraction = null;
 
     [Space, Header("Shooting")]
     [SerializeField] private WeaponController weaponController = null;
@@ -30,11 +31,6 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region UNITY_CALLS
-    private void Start()
-    {
-        Setup();
-    }
-
     private void Update()
     {
         if(!initialized)
@@ -43,6 +39,13 @@ public class PlayerController : MonoBehaviour
         }
 
         playerMovementActions.onMove?.Invoke();
+    }
+    #endregion
+
+    #region INIT
+    public void Init()
+    {
+        Setup();
     }
     #endregion
 
@@ -55,6 +58,7 @@ public class PlayerController : MonoBehaviour
         playerUIActions = playerUIController.GetActions();
         playerMovementActions = playerMovement.GetActions();
 
+        playerInteraction.Init(playerCamera, playerUIActions);
         weaponController.Init(playerUIActions);
 
         initialized = true;

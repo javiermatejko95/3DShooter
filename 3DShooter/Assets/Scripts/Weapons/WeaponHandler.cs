@@ -28,6 +28,7 @@ public class WeaponHandler : MonoBehaviour
 
             weapon.Init();
             weapon.Toggle(false);
+            weapon.WeaponModel.Unlocked = false;
 
             weapons.Add(weapon);
         }
@@ -40,6 +41,16 @@ public class WeaponHandler : MonoBehaviour
     public Weapon GetWeaponByIndex(int index)
     {
         Weapon weapon = null;
+
+        if(index >= 0 && index < weapons.Count)
+        {
+            if(!weapons[index].WeaponModel.Unlocked)
+            {
+                weapon = weapons[currentIndex];
+
+                return weapon;
+            }
+        }
 
         if(currentIndex >= 0 && currentIndex < weapons.Count)
         {
@@ -112,6 +123,13 @@ public class WeaponHandler : MonoBehaviour
         Weapon weapon = GetWeaponDataById(id);
 
         weapon.GetActions().onAddAmmo?.Invoke(amount);
+    }
+
+    public void BuyWeapon(string id)
+    {
+        Weapon weapon = GetWeaponDataById(id);
+
+        weapon.GetActions().onBuy?.Invoke();
     }
     #endregion
 }

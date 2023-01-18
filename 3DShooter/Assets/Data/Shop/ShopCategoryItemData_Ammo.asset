@@ -15,6 +15,7 @@ MonoBehaviour:
   id: ammo
   description: ammo
   itemsData:
-  - {fileID: 11400000, guid: 94f6a10a68f149c46a0ae0f0ee8c4073, type: 2}
-  - {fileID: 11400000, guid: a8b56392ec1245940a6adbe3c32bd2a9, type: 2}
-  - {fileID: 11400000, guid: 71af589cfe504e34cb4b8d91fb798597, type: 2}
+  - {fileID: 11400000, guid: 57cce205b4d496e48838325cb8de8224, type: 2}
+  - {fileID: 11400000, guid: f5b08b1496f85bb4a8b868839f4d7782, type: 2}
+  - {fileID: 11400000, guid: 3285860350a4d5e4eb2f635eb9e8ea35, type: 2}
+  type: 1

@@ -15,25 +15,36 @@ public class StatisticsUIController : MonoBehaviour
     #endregion
 
     #region PRIVATE_FIELDS
+    private bool initialized = false;
+
     private float fpsCount = 0f;
     private bool showFPS = false;
     #endregion
 
     #region UNITY_CALLS
-    private void Start()
-    {
-        fpsTimer.Init(0.1f, UpdateFPS);
-
-        ToggleFPS(showFPS);
-    }
-
     private void Update()
     {
+        if(!initialized)
+        {
+            return;
+        }
+
         if(Input.GetKeyDown(KeyCode.F8))
         {
             showFPS = !showFPS;
             ToggleFPS(showFPS);
         }
+    }
+    #endregion
+
+    #region INIT
+    public void Init()
+    {
+        fpsTimer.Init(0.1f, UpdateFPS);
+
+        ToggleFPS(showFPS);
+
+        initialized = true;
     }
     #endregion
 

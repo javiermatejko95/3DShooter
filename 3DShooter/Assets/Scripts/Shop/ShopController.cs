@@ -25,6 +25,8 @@ public class ShopController : MonoBehaviour
     #endregion
 
     #region PRIVATE_FIELDS
+    private bool initialized = false;
+
     private List<ShopCategoryHolder> categoriesDataList = new();
     private List<AmmoItemHolder> ammoItemsList = new();
     private List<GunItemHolder> gunItemsList = new();
@@ -35,56 +37,7 @@ public class ShopController : MonoBehaviour
     #endregion
 
     #region UNITY_CALLS
-    private void Awake()
-    {
-        for(int i = 0; i < categoriesData.Length; i++)
-        {
-            ShopCategoryHolder categoryHolder = Instantiate(categoryPrefabUI, parentCategoryObject);
 
-            string id = categoriesData[i].Id;
-
-            categoryHolder.Init(categoriesData[i], () => SelectCategory(id));
-
-            categoriesDataList.Add(categoryHolder);
-
-            switch(categoriesData[i].Type)
-            {
-                case ITEM_TYPE.AMMO:
-                    for(int j = 0; j < categoriesData[i].ItemsData.Length; j++)
-                    {
-                        AmmoItemHolder ammoItemHolder = Instantiate(ammoItemHolderPrefab, parentItemObject);
-
-                        ammoItemHolder.Init(categoriesData[i].ItemsData[j] as AmmoShopData, null);
-                        ammoItemHolder.Toggle(false);
-
-                        ammoItemsList.Add(ammoItemHolder);
-                    }
-                    break;
-                case ITEM_TYPE.GUN:
-                    for (int j = 0; j < categoriesData[i].ItemsData.Length; j++)
-                    {
-                        GunItemHolder gunItemHolder = Instantiate(gunItemHolderPrefab, parentItemObject);
-
-                        gunItemHolder.Init(categoriesData[i].ItemsData[j] as GunShopData, null);
-                        gunItemHolder.Toggle(false);
-
-                        gunItemsList.Add(gunItemHolder);
-                    }
-                    break;
-            }            
-        }
-
-        shopView.SetActive(onToggle);
-    }
-
-    private void Update()
-    {
-        if(Input.GetKeyDown(KeyCode.J))
-        {
-            onToggle = !onToggle;
-            shopView.SetActive(onToggle);
-        }
-    }
     #endregion
 
     #region INIT
@@ -99,12 +52,49 @@ public class ShopController : MonoBehaviour
             categoryHolder.Init(categoriesData[i], () => SelectCategory(id));
 
             categoriesDataList.Add(categoryHolder);
+
+            switch (categoriesData[i].Type)
+            {
+                case ITEM_TYPE.AMMO:
+                    for (int j = 0; j < categoriesData[i].ItemsData.Length; j++)
+                    {
+                        AmmoItemHolder ammoItemHolder = Instantiate(ammoItemHolderPrefab, parentItemObject);
+
+                        AmmoShopData ammoShopData = categoriesData[i].ItemsData[j] as AmmoShopData;
+
+                        ammoItemHolder.Init(ammoShopData, () => BuyAmmo(ammoShopData.Id, ammoShopData.Amount));
+                        ammoItemHolder.Toggle(false);
+
+                        ammoItemsList.Add(ammoItemHolder);
+                    }
+                    break;
+                case ITEM_TYPE.GUN:
+                    for (int j = 0; j < categoriesData[i].ItemsData.Length; j++)
+                    {
+                        GunItemHolder gunItemHolder = Instantiate(gunItemHolderPrefab, parentItemObject);
+
+                        GunShopData gunShopData = categoriesData[i].ItemsData[j] as GunShopData;
+
+                        gunItemHolder.Init(gunShopData, () => BuyWeapon(gunShopData.Id));
+                        gunItemHolder.Toggle(false);
+
+                        gunItemsList.Add(gunItemHolder);
+                    }
+                    break;
+            }
         }
+
+        shopView.SetActive(onToggle);
+
+        initialized = true;
     }
     #endregion
 
     #region PUBLIC_METHODS
-
+    public void ToggleUI(bool status)
+    {
+        shopView.SetActive(status);
+    }
     #endregion
 
     #region PRIVATE_METHODS
@@ -117,17 +107,22 @@ public class ShopController : MonoBehaviour
 
         for(int i = 0; i < categoriesData.Length; i++)
         {
-            switch(categoriesData[i].Type)
+            if(categoriesData[i].Id == id)
             {
-                case ITEM_TYPE.AMMO:
-                    ToggleAmmoList(true);
-                    ToggleGunsList(false);
-                    break;
-                case ITEM_TYPE.GUN:
-                    ToggleAmmoList(false);
-                    ToggleGunsList(true);
-                    break;
-            }
+                switch (categoriesData[i].Type)
+                {
+                    case ITEM_TYPE.AMMO:
+                        ToggleAmmoList(true);
+                        ToggleGunsList(false);
+                        break;
+                    case ITEM_TYPE.GUN:
+                        ToggleAmmoList(false);
+                        ToggleGunsList(true);
+                        break;
+                }
+
+                break;
+            }            
         }
 
         selectedCategory = id;
@@ -147,6 +142,16 @@ public class ShopController : MonoBehaviour
         {
             gunItemsList[i].Toggle(status);
         }
+    }
+
+    private void BuyWeapon(string id)
+    {
+        weaponHandler.BuyWeapon(id);
+    }
+
+    private void BuyAmmo(string id, int amount)
+    {
+        weaponHandler.AddAmmo(id, amount);
     }
     #endregion
 }
