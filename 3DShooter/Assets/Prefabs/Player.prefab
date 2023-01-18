@@ -429,6 +429,7 @@ GameObject:
   - component: {fileID: 1491110495060403881}
   - component: {fileID: 8187552172029813779}
   - component: {fileID: 1491110495060403883}
+  - component: {fileID: 787062595}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -487,6 +488,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerMovement: {fileID: 8187552172029813779}
   playerCamera: {fileID: 1491110494347976201}
+  playerInteraction: {fileID: 787062595}
   weaponController: {fileID: 1491110495060403883}
   playerUIController: {fileID: 0}
 --- !u!114 &8187552172029813779
@@ -534,6 +536,22 @@ MonoBehaviour:
   sway: {fileID: 1491110494187441232}
   keys: 310000003200000033000000
   weaponContainer: {fileID: 1491110494113343775}
+--- !u!114 &787062595
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1491110495060403887}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 852ff823df15db94e9926bd01df6976a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  distance: 3
+  mask:
+    serializedVersion: 2
+    m_Bits: 2048
 --- !u!1 &1491110495551396003
 GameObject:
   m_ObjectHideFlags: 0
