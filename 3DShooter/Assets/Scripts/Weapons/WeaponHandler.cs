@@ -15,10 +15,16 @@ public class WeaponHandler : MonoBehaviour
     private int currentIndex = -1;
     #endregion
 
+    #region ACTIONS
+    private PlayerUIActions playerUIActions = null;
+    #endregion
+
     #region INIT
-    public void Init(Transform parent)
+    public void Init(Transform parent, PlayerUIActions playerUIActions)
     {
         currentIndex = -1;
+
+        this.playerUIActions = playerUIActions;
 
         for(int i = 0; i < weaponsPrefab.Length; i++)
         {
@@ -123,6 +129,8 @@ public class WeaponHandler : MonoBehaviour
         Weapon weapon = GetWeaponDataById(id);
 
         weapon.GetActions().onAddAmmo?.Invoke(amount);
+
+        playerUIActions.onUpdateAmmoText?.Invoke(weapon.WeaponModel.CurrentAmmo, weapon.WeaponModel.CurrentMaxAmmo);
     }
 
     public void BuyWeapon(string id)

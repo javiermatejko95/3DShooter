@@ -6,6 +6,7 @@ using UnityEngine;
 public class PlayerMovementActions
 {
     public Action onMove = null;
+    public Action<bool> onToggle = null;
 }
 
 public class PlayerMovement : MonoBehaviour
@@ -39,6 +40,8 @@ public class PlayerMovement : MonoBehaviour
     private bool isCrouching = false;
 
     private float currentSpeed = 0f;
+
+    private bool canMove = false;
     #endregion
 
     #region ACTIONS
@@ -53,8 +56,11 @@ public class PlayerMovement : MonoBehaviour
         cc = GetComponent<CharacterController>();
 
         playerMovementActions.onMove = Move;
+        playerMovementActions.onToggle = Toggle;
 
         currentSpeed = speed;
+
+        Toggle(true);
     }
     #endregion
 
@@ -68,6 +74,11 @@ public class PlayerMovement : MonoBehaviour
     #region PRIVATE_METHODS
     private void Move()
     {
+        if(!canMove)
+        {
+            return;
+        }
+
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
 
         if(isGrounded && velocity.y < 0f)
@@ -127,6 +138,11 @@ public class PlayerMovement : MonoBehaviour
             playerBody.localPosition = new Vector3(0f, 0f, 0f);
             isCrouching = false;
         }
+    }
+
+    private void Toggle(bool status)
+    {
+        canMove = status;
     }
     #endregion
 }

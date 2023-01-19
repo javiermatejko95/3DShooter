@@ -1,6 +1,12 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
+public class CameraControllerActions
+{
+    public Action<bool> onToggle = null;
+}
 
 public class CameraController : MonoBehaviour
 {
@@ -12,13 +18,15 @@ public class CameraController : MonoBehaviour
     #endregion
 
     #region PRIVATE_FIELDS
-    private float verticalAngle;
-
     private float xRotation = 0f;
 
-    private float rotationSpeedX;
-    private float rotationSpeedY;
     private float rotationRange = 60.0f;
+
+    private bool canRotate = false;
+    #endregion
+
+    #region ACTIONS
+    private CameraControllerActions cameraControllerActions = new();
     #endregion
 
     #region UNITY_CALLS
@@ -30,12 +38,33 @@ public class CameraController : MonoBehaviour
     private void Update()
     {
         RotatePlayer();        
-    }    
+    }
+    #endregion
+
+    #region INIT
+    public void Init()
+    {
+        cameraControllerActions.onToggle = Toggle;
+
+        Toggle(true);
+    }
+    #endregion
+
+    #region PUBLIC_METHODS
+    public CameraControllerActions GetActions()
+    {
+        return cameraControllerActions;
+    }
     #endregion
 
     #region PRIVATE_METHODS
     private void RotatePlayer()
     {
+        if(!canRotate)
+        {
+            return;
+        }
+
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
         float mouseY = -Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
 
@@ -45,5 +74,19 @@ public class CameraController : MonoBehaviour
         transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
         player.Rotate(Vector3.up * mouseX);
     }    
+
+    private void Toggle(bool status)
+    {
+        canRotate = status;
+
+        if(status)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.None;
+        }
+    }
     #endregion
 }

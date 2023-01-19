@@ -1,4 +1,10 @@
+using System;
 using UnityEngine;
+
+public class WeaponControllerActions
+{
+    public Action<bool> onToggle = null;
+}
 
 public class WeaponController : MonoBehaviour
 {
@@ -41,6 +47,7 @@ public class WeaponController : MonoBehaviour
     #endregion
 
     #region ACTIONS
+    private WeaponControllerActions weaponControllerActions = new();
     private PlayerUIActions playerUIActions = null;
 
     private WeaponActions weaponActions = null;
@@ -121,7 +128,9 @@ public class WeaponController : MonoBehaviour
         this.reloadActions = reload.GetActions();
         this.swayActions = sway.GetActions();
 
-        weaponHandler.Init(weaponContainer.transform);
+        weaponControllerActions.onToggle = ToggleCanShoot;
+
+        weaponHandler.Init(weaponContainer.transform, playerUIActions);
 
         recoil.Init();
         sway.Init();
@@ -136,6 +145,16 @@ public class WeaponController : MonoBehaviour
     #endregion
 
     #region PUBLIC_METHODS
+    public WeaponControllerActions GetActions()
+    {
+        return weaponControllerActions;
+    }
+
+    public SwayActions GetSwayActions()
+    {
+        return swayActions;
+    }
+
     public void SetWeaponById(string id)
     {
         selectedWeapon = weaponHandler.GetWeaponById(id);

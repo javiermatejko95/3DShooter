@@ -9,6 +9,7 @@ public class PlayerUIActions
 {
     public Action<int, int> onUpdateAmmoText = null;
     public Action<string> onUpdateMessage = null;
+    public Action<int> onUpdateMoneyText = null;
 }
 
 public class PlayerUIController : MonoBehaviour
@@ -16,6 +17,7 @@ public class PlayerUIController : MonoBehaviour
     #region EXPOSED_FIELDS
     [SerializeField] private TextMeshProUGUI ammoText = null;
     [SerializeField] private TextMeshProUGUI messageText = null;
+    [SerializeField] private TextMeshProUGUI moneyText = null;
     #endregion
 
     #region PRIVATE_FIELDS
@@ -27,6 +29,7 @@ public class PlayerUIController : MonoBehaviour
     {
         playerUIActions.onUpdateAmmoText = UpdateAmmoText;
         playerUIActions.onUpdateMessage = UpdateMessageText;
+        playerUIActions.onUpdateMoneyText = UpdateMoneyText;
     }
     #endregion
 
@@ -46,6 +49,11 @@ public class PlayerUIController : MonoBehaviour
     private void UpdateMessageText(string message)
     {
         messageText.text = message;
+    }
+
+    private void UpdateMoneyText(int amount)
+    {
+        moneyText.text = "$" + amount;
     }
     #endregion
 }

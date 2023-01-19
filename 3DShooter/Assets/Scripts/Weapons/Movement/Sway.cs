@@ -4,6 +4,7 @@ using UnityEngine;
 public class SwayActions
 {
     public Action onUpdate = null;
+    public Action<bool> onToggle = null;
 }
 
 public class Sway : MonoBehaviour
@@ -17,14 +18,19 @@ public class Sway : MonoBehaviour
     private Quaternion originRotation = new();
 
     private SwayActions swayActions = new();
+
+    private bool canSway = false;
     #endregion
 
     #region INIT
     public void Init()
     {
         swayActions.onUpdate = UpdateSway;
+        swayActions.onToggle = Toggle;
 
         originRotation = transform.localRotation;
+
+        Toggle(true);
     }
     #endregion
 
@@ -38,6 +44,11 @@ public class Sway : MonoBehaviour
     #region PRIVATE_METHODS
     private void UpdateSway()
     {
+        if(!canSway)
+        {
+            return;
+        }
+
         float xMouse = Input.GetAxis("Mouse X");
         float yMouse = Input.GetAxis("Mouse Y");
 
@@ -47,6 +58,11 @@ public class Sway : MonoBehaviour
         Quaternion targetRotation = originRotation * xAdjustment * yAdjustment * zAdjustment;
 
         transform.localRotation = Quaternion.Lerp(transform.localRotation, targetRotation, Time.deltaTime * smooth);
+    }
+
+    private void Toggle(bool status)
+    {
+        canSway = status;
     }
     #endregion
 }

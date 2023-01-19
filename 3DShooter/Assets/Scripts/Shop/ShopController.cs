@@ -22,11 +22,10 @@ public class ShopController : MonoBehaviour
 
     [Space, Header("Handlers")]
     [SerializeField] private WeaponHandler weaponHandler = null;
+    [SerializeField] private EconomyHandler economyHandler = null;
     #endregion
 
     #region PRIVATE_FIELDS
-    private bool initialized = false;
-
     private List<ShopCategoryHolder> categoriesDataList = new();
     private List<AmmoItemHolder> ammoItemsList = new();
     private List<GunItemHolder> gunItemsList = new();
@@ -36,13 +35,27 @@ public class ShopController : MonoBehaviour
     private string selectedCategory = string.Empty;
     #endregion
 
+    #region ACTIONS
+    private EconomyActions economyActions = null;
+    private PlayerMovementActions playerMovementActions = null;
+    private WeaponControllerActions weaponControllerActions = null;
+    private CameraControllerActions cameraControllerActions = null;
+    private SwayActions swayActions = null;
+    #endregion
+
     #region UNITY_CALLS
 
     #endregion
 
     #region INIT
-    public void Init()
+    public void Init(EconomyActions economyActions, PlayerMovementActions playerMovementActions, WeaponControllerActions weaponControllerActions, CameraControllerActions cameraControllerActions, SwayActions swayActions)
     {
+        this.economyActions = economyActions;
+        this.playerMovementActions = playerMovementActions;
+        this.weaponControllerActions = weaponControllerActions;
+        this.cameraControllerActions = cameraControllerActions;
+        this.swayActions = swayActions;
+
         for (int i = 0; i < categoriesData.Length; i++)
         {
             ShopCategoryHolder categoryHolder = Instantiate(categoryPrefabUI, parentCategoryObject);
@@ -62,7 +75,7 @@ public class ShopController : MonoBehaviour
 
                         AmmoShopData ammoShopData = categoriesData[i].ItemsData[j] as AmmoShopData;
 
-                        ammoItemHolder.Init(ammoShopData, () => BuyAmmo(ammoShopData.Id, ammoShopData.Amount));
+                        ammoItemHolder.Init(ammoShopData, () => BuyAmmo(ammoShopData));
                         ammoItemHolder.Toggle(false);
 
                         ammoItemsList.Add(ammoItemHolder);
@@ -75,7 +88,7 @@ public class ShopController : MonoBehaviour
 
                         GunShopData gunShopData = categoriesData[i].ItemsData[j] as GunShopData;
 
-                        gunItemHolder.Init(gunShopData, () => BuyWeapon(gunShopData.Id));
+                        gunItemHolder.Init(gunShopData, () => BuyWeapon(gunShopData));
                         gunItemHolder.Toggle(false);
 
                         gunItemsList.Add(gunItemHolder);
@@ -85,8 +98,6 @@ public class ShopController : MonoBehaviour
         }
 
         shopView.SetActive(onToggle);
-
-        initialized = true;
     }
     #endregion
 
@@ -94,6 +105,10 @@ public class ShopController : MonoBehaviour
     public void ToggleUI(bool status)
     {
         shopView.SetActive(status);
+        playerMovementActions.onToggle?.Invoke(!status);
+        weaponControllerActions.onToggle?.Invoke(!status);
+        cameraControllerActions.onToggle?.Invoke(!status);
+        swayActions.onToggle?.Invoke(!status);
     }
     #endregion
 
@@ -144,14 +159,22 @@ public class ShopController : MonoBehaviour
         }
     }
 
-    private void BuyWeapon(string id)
+    private void BuyWeapon(ItemShopData itemShopData)
     {
-        weaponHandler.BuyWeapon(id);
+        //check if weapon is already unlocked
+
+        economyActions.onUseCoins?.Invoke(itemShopData.Price,
+            () => weaponHandler.BuyWeapon(itemShopData.Id),
+            () => Debug.Log("NO SE PUDE COMPRAR " + itemShopData.Id));
     }
 
-    private void BuyAmmo(string id, int amount)
+    private void BuyAmmo(ItemShopData itemShopData)
     {
-        weaponHandler.AddAmmo(id, amount);
+        //check if can add more ammo
+
+        economyActions.onUseCoins?.Invoke(itemShopData.Price,
+            () => weaponHandler.AddAmmo(itemShopData.Id, ((AmmoShopData)itemShopData).Amount),
+            () => Debug.Log("NO SE PUDE COMPRAR " + itemShopData.Id + " BALAS"));
     }
     #endregion
 }

@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private PlayerMovement playerMovement = null;
 
     [Space, Header("Camera")]
+    [SerializeField] private CameraController cameraController = null;
     [SerializeField] private Transform playerCamera = null;
     [SerializeField] private PlayerInteraction playerInteraction = null;
 
@@ -28,6 +29,7 @@ public class PlayerController : MonoBehaviour
     #region ACTIONS
     private PlayerUIActions playerUIActions = null;
     private PlayerMovementActions playerMovementActions = null;
+    private CameraControllerActions cameraControllerActions = null;
     #endregion
 
     #region UNITY_CALLS
@@ -49,6 +51,33 @@ public class PlayerController : MonoBehaviour
     }
     #endregion
 
+    #region PUBLIC_METHODS
+    public PlayerUIActions GetActions()
+    {
+        return playerUIActions;
+    }
+
+    public PlayerMovementActions GetMovementActions()
+    {
+        return playerMovementActions;
+    }
+
+    public WeaponControllerActions GetWeaponControllerActions()
+    {
+        return weaponController.GetActions();
+    }
+
+    public SwayActions GetSwayActions()
+    {
+        return weaponController.GetSwayActions();
+    }
+
+    public CameraControllerActions GetCameraControllerActions()
+    {
+        return cameraController.GetActions();
+    }
+    #endregion
+
     #region PRIVATE_METHODS
     private void Setup()
     {
@@ -60,6 +89,8 @@ public class PlayerController : MonoBehaviour
 
         playerInteraction.Init(playerCamera, playerUIActions);
         weaponController.Init(playerUIActions);
+
+        cameraController.Init();
 
         initialized = true;
     }
