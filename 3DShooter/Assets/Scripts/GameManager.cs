@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private ShopController shopController = null;
     [SerializeField] private EconomyController economyController = null;
     [SerializeField] private StatisticsUIController statisticsUIController = null;
+    [SerializeField] private TargetController targetController = null;
 
     //[Space, Header("Handlers")]
     //[SerializeField] private EconomyHandler economyHandler = null;
@@ -33,6 +34,8 @@ public class GameManager : MonoBehaviour
         economyController.Init(playerController.GetActions());
         shopController.Init(economyController.GetActions(), playerController.GetMovementActions(), playerController.GetWeaponControllerActions(), playerController.GetCameraControllerActions(), playerController.GetSwayActions());
         statisticsUIController.Init();
+
+        targetController.Init();
     }
     #endregion
 
