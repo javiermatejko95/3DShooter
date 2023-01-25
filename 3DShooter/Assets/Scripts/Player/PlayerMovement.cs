@@ -26,6 +26,11 @@ public class PlayerMovement : MonoBehaviour
 
     [Space, Header("Crouching")]
     [SerializeField] private Transform playerBody = null;
+
+    [Space, Header("Ladder Check")]
+    [SerializeField] private float avoidFloorDistance = 0.1f;
+    [SerializeField] private float ladderGrabDistance = 0.4f;
+    [SerializeField] private float ladderFloorDropDistance = 0.1f;
     #endregion
 
     #region PRIVATE_FIELDS
@@ -38,6 +43,9 @@ public class PlayerMovement : MonoBehaviour
     private bool isGrounded = false;
     private bool isSprinting = false;
     private bool isCrouching = false;
+    private bool isClimbingLadder = false;
+
+    private Vector3 lastGrabLadderDirection = new();
 
     private float currentSpeed = 0f;
 
@@ -89,21 +97,34 @@ public class PlayerMovement : MonoBehaviour
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
 
-        Vector3 move = transform.right * x + transform.forward * z;
+        Vector3 move = transform.right * x + transform.forward * z;        
 
         Sprint();
         Crouch();
 
-        cc.Move(move * currentSpeed * Time.deltaTime);
+        Vector3 direction = transform.forward * z;
 
-        if(Input.GetButtonDown("Jump") && isGrounded)
+        ClimbLadder(direction);
+
+        if (isClimbingLadder)
+        {
+            move = transform.up * z;
+            velocity = Vector3.zero;
+        }
+
+        cc.Move(move * currentSpeed * Time.deltaTime);        
+
+        if (Input.GetButtonDown("Jump") && isGrounded)
         {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
         }
 
-        velocity.y += gravity * Time.deltaTime;
+        if(!isClimbingLadder)
+        {
+            velocity.y += gravity * Time.deltaTime;
 
-        cc.Move(velocity * Time.deltaTime);
+            cc.Move(velocity * Time.deltaTime);
+        }        
     }
 
     private void Sprint()
@@ -138,6 +159,57 @@ public class PlayerMovement : MonoBehaviour
             playerBody.localPosition = new Vector3(0f, 0f, 0f);
             isCrouching = false;
         }
+    }
+
+    private void ClimbLadder(Vector3 direction)
+    {
+        if (!isClimbingLadder)
+        {
+            if (Physics.Raycast(groundCheck.position + Vector3.up * avoidFloorDistance, direction, out RaycastHit hit, ladderGrabDistance))
+            {
+                if (hit.transform.TryGetComponent(out Ladder ladder))
+                {
+                    GrabLadder(direction);
+                }
+            }
+        }
+        else
+        {
+            if (Physics.Raycast(groundCheck.position + Vector3.up * avoidFloorDistance, lastGrabLadderDirection, out RaycastHit hit, ladderGrabDistance))
+            {
+                if (!hit.transform.TryGetComponent(out Ladder ladder))
+                {
+                    DropLadder();
+                    velocity = Vector3.up * 4f;
+                }
+            }
+            else
+            {
+                DropLadder();
+            }
+
+            Debug.Log(Vector3.Dot(direction, lastGrabLadderDirection));
+
+            if (Vector3.Dot(direction, lastGrabLadderDirection) < 0)
+            {
+                if (Physics.Raycast(groundCheck.position, Vector3.down, out RaycastHit floorRayCastHit, ladderFloorDropDistance))
+                {
+                    DropLadder();
+                }
+            }
+        }
+    }
+
+    private void GrabLadder(Vector3 lastGrabLadderDirection)
+    {
+        isClimbingLadder = true;
+
+        this.lastGrabLadderDirection = lastGrabLadderDirection;
+    }
+
+    private void DropLadder()
+    {
+        isClimbingLadder = false;
     }
 
     private void Toggle(bool status)

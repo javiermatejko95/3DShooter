@@ -45,7 +45,7 @@ public class PlayerInteraction : MonoBehaviour
         playerUIActions.onUpdateMessage?.Invoke(string.Empty);
 
         Ray ray = new Ray(camera.position, camera.forward);
-        Debug.DrawRay(ray.origin, ray.direction * distance);
+        //Debug.DrawRay(ray.origin, ray.direction * distance);
 
         RaycastHit hit;
 
