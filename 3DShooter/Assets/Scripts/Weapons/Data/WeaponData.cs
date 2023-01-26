@@ -23,6 +23,7 @@ public class WeaponData : ScriptableObject
     [SerializeField] private int maxAmmo = 120;
     [SerializeField] private int currentMaxAmmo = 120;
     [SerializeField] private int maxMagazineSize = 30;
+    [SerializeField] private int damage = 10;
     [SerializeField] private bool unlocked = false;
 
     [Space, Header("Recoil Config")]
@@ -36,6 +37,7 @@ public class WeaponData : ScriptableObject
     public int CurrentMaxAmmo { get => currentMaxAmmo; }
     public int MaxAmmo { get => maxAmmo; }
     public int MaxMagazineSize { get => maxMagazineSize; }
+    public int Damage { get => damage; }
     public bool Unlocked { get => unlocked; }
     public RecoilConfig RecoilConfig { get => recoilConfig; }
     #endregion

@@ -188,8 +188,6 @@ public class PlayerMovement : MonoBehaviour
                 DropLadder();
             }
 
-            Debug.Log(Vector3.Dot(direction, lastGrabLadderDirection));
-
             if (Vector3.Dot(direction, lastGrabLadderDirection) < 0)
             {
                 if (Physics.Raycast(groundCheck.position, Vector3.down, out RaycastHit floorRayCastHit, ladderFloorDropDistance))

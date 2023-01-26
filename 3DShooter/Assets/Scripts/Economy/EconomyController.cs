@@ -8,6 +8,8 @@ public class EconomyActions
     public Action<int, Action, Action> onUseCoins = null;
 
     public Action<int> onCheckMoney = null;
+
+    public Action<int> onAddMoney = null;
 }
 
 public class EconomyController : MonoBehaviour
@@ -40,6 +42,7 @@ public class EconomyController : MonoBehaviour
     public void Init(PlayerUIActions playerUIActions)
     {
         economyActions.onUseCoins = UseCoins;
+        economyActions.onAddMoney = AddMoney;
 
         this.playerUIActions = playerUIActions;
 
@@ -55,11 +58,15 @@ public class EconomyController : MonoBehaviour
         return economyActions;
     }
 
-    public void UseCoins(int amount, Action onSuccess, Action onFailure)
+
+    #endregion
+
+    #region PRIVATE_METHODS
+    private void UseCoins(int amount, Action onSuccess, Action onFailure)
     {
         int newAmount = moneyAmount - amount;
 
-        if(newAmount >= 0)
+        if (newAmount >= 0)
         {
             moneyAmount = newAmount;
 
@@ -71,6 +78,12 @@ public class EconomyController : MonoBehaviour
         {
             onFailure?.Invoke();
         }
+    }
+
+    private void AddMoney(int amount)
+    {
+        moneyAmount += amount;
+        playerUIActions.onUpdateMoneyText?.Invoke(moneyAmount);
     }
     #endregion
 }

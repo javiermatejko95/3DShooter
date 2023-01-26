@@ -9,21 +9,32 @@ public class TargetLimb : MonoBehaviour
     [SerializeField] private LIMB limb = default;
     #endregion
 
+    #region PRIVATE_FIELDS
+    private BoxCollider collider = null;
+    #endregion
+
     #region ACTIONS
-    private Action onTakeDamage = null;
+    private Action<int> onTakeDamage = null;
     #endregion
 
     #region INIT
-    public void Init(Action onTakeDamage)
+    public void Init(Action<int> onTakeDamage)
     {
         this.onTakeDamage = onTakeDamage;
+
+        collider = this.GetComponent<BoxCollider>();
     }
     #endregion
 
     #region PUBLIC_METHODS
-    public void TakeDamage()
+    public void TakeDamage(int amount)
     {
-        onTakeDamage?.Invoke();
+        onTakeDamage?.Invoke(amount);
+    }
+
+    public void ToggleCollider(bool status)
+    {
+        collider.enabled = status;
     }
     #endregion
 }

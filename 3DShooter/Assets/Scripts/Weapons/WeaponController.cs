@@ -237,12 +237,11 @@ public class WeaponController : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(camera.transform.position, camera.transform.forward, out hit, 100f))
         {
-            //Debug.Log(hit.transform.name);
             TargetLimb targetLimb = hit.transform.GetComponent<TargetLimb>();
 
             if(targetLimb != null)
             {
-                targetLimb.TakeDamage();
+                targetLimb.TakeDamage(selectedWeapon.WeaponModel.Damage);
             }
         }
 

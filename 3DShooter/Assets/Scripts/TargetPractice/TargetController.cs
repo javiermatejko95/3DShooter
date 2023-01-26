@@ -16,10 +16,20 @@ public class TargetController : MonoBehaviour
     [SerializeField] private Target target = null;
     #endregion
 
+    #region ACTIONS
+    private EconomyActions economyActions = null;
+    #endregion
+
     #region INIT
-    public void Init()
+    public void Init(EconomyActions economyActions)
     {
-        target.Init();
+        this.economyActions = economyActions;
+
+        target.Init(economyActions.onAddMoney);
     }
+    #endregion
+
+    #region PRIVATE_METHODS
+
     #endregion
 }

@@ -18,6 +18,7 @@ MonoBehaviour:
   maxAmmo: 24
   currentMaxAmmo: 6
   maxMagazineSize: 6
+  damage: 60
   unlocked: 0
   recoilConfig:
     RecoilRotation: {x: 500, y: 50, z: 50}
