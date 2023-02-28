@@ -24,7 +24,7 @@ public class Target : MonoBehaviour
     #region INIT
     public void Init(Action<int> onAddMoney)
     {
-        anim = transform.GetComponent<Animator>();
+        //anim = transform.GetComponent<Animator>();
 
         this.onAddMoney = onAddMoney;
 
@@ -47,7 +47,7 @@ public class Target : MonoBehaviour
     {
         health -= amount;
 
-        if(health <= 0)
+        if (health <= 0)
         {
             onAddMoney?.Invoke(moneyGiven);
 

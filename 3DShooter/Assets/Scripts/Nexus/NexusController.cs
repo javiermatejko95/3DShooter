@@ -6,6 +6,7 @@ using UnityEngine;
 public class NexusControllerActions
 {
     public Action<int> onTakeDamage = null;
+    public Func<Nexus> onGetNexus = null;
 }
 
 public class NexusController : MonoBehaviour
@@ -25,6 +26,7 @@ public class NexusController : MonoBehaviour
         nexus.Init(nexusData);
 
         nexusControllerActions.onTakeDamage += nexus.TakeDamage;
+        nexusControllerActions.onGetNexus += GetNexus;
     }
     #endregion
 
@@ -33,9 +35,17 @@ public class NexusController : MonoBehaviour
     {
         return nexusControllerActions;
     }
+
+    //public Nexus GetNexus()
+    //{
+    //    return nexus;
+    //}
     #endregion
 
     #region PRIVATE_METHODS
-
+    private Nexus GetNexus()
+    {
+        return nexus;
+    }
     #endregion
 }
