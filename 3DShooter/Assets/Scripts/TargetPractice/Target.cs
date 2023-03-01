@@ -24,7 +24,7 @@ public class Target : MonoBehaviour
     #region INIT
     public void Init(Action<int> onAddMoney)
     {
-        //anim = transform.GetComponent<Animator>();
+        anim = transform.GetComponent<Animator>();
 
         this.onAddMoney = onAddMoney;
 

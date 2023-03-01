@@ -6,21 +6,22 @@ using UnityEngine;
 public class WavesControllerActions
 {
     public Action onCheckEnemiesAlive = null;
+    public Action onReduceEnemyAlive = null;
 }
 
 public class WavesController : MonoBehaviour
 {
     #region EXPOSED_FIELDS
     [SerializeField] private WaveData[] wavesData = null;
-    [SerializeField] private float waveRate = 5f;
-    [SerializeField] private Transform spawnPoint = null;
+    [SerializeField] private Transform[] spawnPoints = null;
     #endregion
 
     #region PRIVATE_FIELDS
     private int index = 0;
-    private float waveCountdown = 0f;
 
-    private bool initialized = false;
+    private int enemiesAlive = 0;
+
+    private bool spawnEnemies = false;
     #endregion
 
     #region ACTIONS
@@ -34,6 +35,7 @@ public class WavesController : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.Y))
         {
+            spawnEnemies = true;
             CheckEnemiesAlive();
         }
     }
@@ -46,8 +48,7 @@ public class WavesController : MonoBehaviour
         this.economyActions = economyActions;
 
         wavesControllerActions.onCheckEnemiesAlive += CheckEnemiesAlive;
-
-        Restart();
+        wavesControllerActions.onReduceEnemyAlive += ReduceEnemyAlive;
     }
     #endregion
 
@@ -59,20 +60,17 @@ public class WavesController : MonoBehaviour
     #endregion
 
     #region PRIVATE_METHODS
-    private void Restart()
-    {
-        waveCountdown = waveRate;
-    }
-
     private void SpawnEnemy(GameObject enemyPrefab)
     {
-        EnemyAI enemyAI = Instantiate(enemyPrefab).GetComponent<EnemyAI>();
+        EnemyAI enemyAI = Instantiate(enemyPrefab, spawnPoints[UnityEngine.Random.Range(0, spawnPoints.Length)]).GetComponent<EnemyAI>();
 
         enemyAI.Init(nexusControllerActions, economyActions, wavesControllerActions);
     }
 
     private IEnumerator ISpawnWave(WaveData waveData)
     {
+        enemiesAlive = waveData.Amount;
+
         for(int i = 0; i < waveData.Amount; i++)
         {
             SpawnEnemy(waveData.EnemyPrefab.gameObject);
@@ -87,7 +85,7 @@ public class WavesController : MonoBehaviour
 
     private void CheckEnemiesAlive()
     {
-        if(GameObject.FindGameObjectWithTag("Enemy") == null)
+        if(enemiesAlive <= 0)
         {
             StartCoroutine(ISpawnWave(wavesData[index]));
         }
@@ -100,7 +98,18 @@ public class WavesController : MonoBehaviour
         if(index >= wavesData.Length)
         {
             index = 0;
+            spawnEnemies = false;
         }
+    }
+
+    private void ReduceEnemyAlive()
+    {
+        enemiesAlive--;
+
+        if(spawnEnemies)
+        {
+            wavesControllerActions.onCheckEnemiesAlive?.Invoke();
+        }        
     }
     #endregion
 }

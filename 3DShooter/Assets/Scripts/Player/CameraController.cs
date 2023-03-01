@@ -20,7 +20,7 @@ public class CameraController : MonoBehaviour
     #region PRIVATE_FIELDS
     private float xRotation = 0f;
 
-    private float rotationRange = 60.0f;
+    private float rotationRange = 90.0f;
 
     private bool canRotate = false;
     #endregion

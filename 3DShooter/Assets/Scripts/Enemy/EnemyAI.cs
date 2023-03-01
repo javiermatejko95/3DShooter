@@ -123,7 +123,7 @@ public class EnemyAI : MonoBehaviour
     private void Die()
     {
         economyActions.onAddMoney?.Invoke(value);
-        wavesControllerActions.onCheckEnemiesAlive?.Invoke();
+        wavesControllerActions.onReduceEnemyAlive?.Invoke();
 
         Destroy(gameObject);
     }
