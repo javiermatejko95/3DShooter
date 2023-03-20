@@ -56,6 +56,8 @@ public class HealthBar : MonoBehaviour
     #region PRIVATE_METHODS
     private void Rotate()
     {
+        //optimize by calculating if the bar is near or far
+
         transform.LookAt(camera.transform);
         transform.Rotate(0, 180, 0);
     }

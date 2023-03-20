@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TargetController targetController = null;
     [SerializeField] private NexusController nexusController = null;
     [SerializeField] private WavesController wavesController = null;
+    [SerializeField] private SegmentsController segmentsController = null;
     #endregion
 
     #region PRIVATE_FIELDS
@@ -64,6 +65,8 @@ public class GameManager : MonoBehaviour
         wavesControllerActions = wavesController.GetActions();
 
         wavesController.Init(nexusControllerActions, economyActions);
+
+        segmentsController.Init();
     }
     #endregion
 

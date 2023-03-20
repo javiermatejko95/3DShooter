@@ -26,10 +26,10 @@ public class Nexus : MonoBehaviour
         this.nexusData = nexusData;
 
         id = nexusData.Id;
-        healthAmount = nexusData.HealthAmount;
+        healthAmount = nexusData.MaxHealthAmount;
 
         healthBar.Init();
-        healthBar.UpdateTarget(healthAmount, nexusData.HealthAmount);
+        healthBar.UpdateTarget(healthAmount, nexusData.MaxHealthAmount);
     }
     #endregion
 
@@ -38,7 +38,7 @@ public class Nexus : MonoBehaviour
     {
         healthAmount -= amount;
 
-        healthBar.UpdateTarget(healthAmount, nexusData.HealthAmount);
+        healthBar.UpdateTarget(healthAmount, nexusData.MaxHealthAmount);
     }
     #endregion
 

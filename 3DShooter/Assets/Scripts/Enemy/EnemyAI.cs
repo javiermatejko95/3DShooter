@@ -13,6 +13,9 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] private NavMeshAgent agent = null;
     [SerializeField] private LayerMask groundMask = default;
     [SerializeField] private LayerMask nexusMask = default;
+
+    [Space, Header("UI")]
+    [SerializeField] private HealthBar healthBar = null;
     #endregion
 
     #region PRIVATE_FIELDS
@@ -48,7 +51,7 @@ public class EnemyAI : MonoBehaviour
 
         inAttackRange = Physics.CheckSphere(transform.position, attackRange, nexusMask);
 
-        if(!inAttackRange)
+        if (!inAttackRange)
         {
             Chase();
         }
@@ -77,6 +80,9 @@ public class EnemyAI : MonoBehaviour
 
         agent.speed = speed;
 
+        healthBar.Init();
+        healthBar.UpdateTarget(maxHealth, maxHealth);
+
         initialized = true;
     }
     #endregion
@@ -86,7 +92,9 @@ public class EnemyAI : MonoBehaviour
     {
         currentHealth -= amount;
 
-        if(currentHealth <= 0)
+        healthBar.UpdateTarget(currentHealth, maxHealth);
+
+        if (currentHealth <= 0)
         {
             Die();
         }
@@ -98,7 +106,10 @@ public class EnemyAI : MonoBehaviour
     #region AI
     private void Chase()
     {
-        agent.SetDestination(nexus.transform.position);
+        GameObject go = GameObject.FindGameObjectWithTag("Segment");
+
+        agent.SetDestination(go.transform.position);
+        //agent.SetDestination(nexus.transform.position);
     }
 
     private void Attack()
@@ -107,7 +118,22 @@ public class EnemyAI : MonoBehaviour
 
         if (!hasAttacked)
         {
-            nexusControllerActions.onTakeDamage?.Invoke(10);
+            Ray ray = new Ray(transform.position, transform.forward);
+            RaycastHit hit;            
+
+            if (Physics.Raycast(ray, out hit, attackRange, nexusMask))
+            {
+                IAttackable attackable = hit.collider.GetComponent<IAttackable>();
+
+                if (attackable != null)
+                {
+                    attackable.TakeDamage(10);
+                }
+            }
+
+            
+
+            //nexusControllerActions.onTakeDamage?.Invoke(10);
 
             hasAttacked = true;
             Invoke(nameof(ResetAttack), attackRate);

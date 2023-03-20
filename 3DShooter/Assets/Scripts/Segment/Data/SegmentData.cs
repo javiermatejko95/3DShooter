@@ -2,8 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Nexus_", menuName = "ScriptableObjects/Nexus", order = 1)]
-public class NexusData : EntityData
+[CreateAssetMenu(fileName = "Segment_", menuName = "ScriptableObjects/Segment", order = 1)]
+public class SegmentData : EntityData
 {
     #region EXPOSED_FIELDS
 
