@@ -11,7 +11,6 @@ public class GameManager : MonoBehaviour
     [SerializeField] private EconomyController economyController = null;
     [SerializeField] private StatisticsUIController statisticsUIController = null;
     [SerializeField] private TargetController targetController = null;
-    [SerializeField] private NexusController nexusController = null;
     [SerializeField] private WavesController wavesController = null;
     [SerializeField] private SegmentsController segmentsController = null;
     #endregion
@@ -24,10 +23,10 @@ public class GameManager : MonoBehaviour
     private PlayerUIActions playerUIActions = null;
     private PlayerMovementActions playerMovementActions = null;
     private EconomyActions economyActions = null;
-    private NexusControllerActions nexusControllerActions = null;
     private WeaponControllerActions weaponControllerActions = null;
     private CameraControllerActions cameraControllerActions = null;
     private WavesControllerActions wavesControllerActions = null;
+    private SegmentsControllerActions segmentsControllerActions = null;
     private SwayActions swayActions = null;
     #endregion
 
@@ -41,21 +40,20 @@ public class GameManager : MonoBehaviour
     #region INIT
     private void Init()
     {
-        nexusController.Init();
-
-        nexusControllerActions = nexusController.GetActions();
-
         playerController.Init();
 
         playerUIActions = playerController.GetActions();
 
         economyController.Init(playerUIActions);
 
+        segmentsController.Init(playerUIActions);
+
         economyActions = economyController.GetActions();
         playerMovementActions = playerController.GetMovementActions();
         weaponControllerActions = playerController.GetWeaponControllerActions();
         cameraControllerActions = playerController.GetCameraControllerActions();
         swayActions = playerController.GetSwayActions();
+        segmentsControllerActions = segmentsController.GetActions();
 
         shopController.Init(economyActions, playerMovementActions, weaponControllerActions, cameraControllerActions, swayActions);
         statisticsUIController.Init();
@@ -64,9 +62,8 @@ public class GameManager : MonoBehaviour
 
         wavesControllerActions = wavesController.GetActions();
 
-        wavesController.Init(nexusControllerActions, economyActions);
+        wavesController.Init(economyActions, segmentsControllerActions);
 
-        segmentsController.Init();
     }
     #endregion
 

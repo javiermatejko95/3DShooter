@@ -10,6 +10,7 @@ public class PlayerUIActions
     public Action<int, int> onUpdateAmmoText = null;
     public Action<string> onUpdateMessage = null;
     public Action<int> onUpdateMoneyText = null;
+    public Action<int, int> onUpdateWallHealthBar = null;
 }
 
 public class PlayerUIController : MonoBehaviour
@@ -18,6 +19,8 @@ public class PlayerUIController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI ammoText = null;
     [SerializeField] private TextMeshProUGUI messageText = null;
     [SerializeField] private TextMeshProUGUI moneyText = null;
+
+    [SerializeField] private HealthBar wallHealthBar = null;
     #endregion
 
     #region PRIVATE_FIELDS
@@ -30,6 +33,9 @@ public class PlayerUIController : MonoBehaviour
         playerUIActions.onUpdateAmmoText = UpdateAmmoText;
         playerUIActions.onUpdateMessage = UpdateMessageText;
         playerUIActions.onUpdateMoneyText = UpdateMoneyText;
+        playerUIActions.onUpdateWallHealthBar = UpdateWallHealthBar;
+
+        wallHealthBar.Init(false);
     }
     #endregion
 
@@ -54,6 +60,11 @@ public class PlayerUIController : MonoBehaviour
     private void UpdateMoneyText(int amount)
     {
         moneyText.text = "$" + amount;
+    }
+
+    private void UpdateWallHealthBar(int currentHealth, int maxHealth)
+    {
+        wallHealthBar.UpdateTarget(currentHealth, maxHealth);
     }
     #endregion
 }

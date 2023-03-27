@@ -12,15 +12,13 @@ public class EnemyAI : MonoBehaviour
     [Space, Header("AI")]
     [SerializeField] private NavMeshAgent agent = null;
     [SerializeField] private LayerMask groundMask = default;
-    [SerializeField] private LayerMask nexusMask = default;
+    [SerializeField] private LayerMask segmentMask = default;
 
     [Space, Header("UI")]
     [SerializeField] private HealthBar healthBar = null;
     #endregion
 
     #region PRIVATE_FIELDS
-    private Nexus nexus = null;
-
     private bool hasAttacked = false;
 
     private bool inAttackRange = false;
@@ -32,11 +30,12 @@ public class EnemyAI : MonoBehaviour
     private float speed = 10f;
     private int value = 1000;
 
+    private Transform target = null;
+
     private bool initialized = false;
     #endregion
 
     #region ACTIONS
-    private NexusControllerActions nexusControllerActions = null;
     private EconomyActions economyActions = null;
     private WavesControllerActions wavesControllerActions = null;
     #endregion
@@ -49,7 +48,7 @@ public class EnemyAI : MonoBehaviour
             return;
         }
 
-        inAttackRange = Physics.CheckSphere(transform.position, attackRange, nexusMask);
+        inAttackRange = Physics.CheckSphere(transform.position, attackRange - 1f, segmentMask);
 
         if (!inAttackRange)
         {
@@ -63,13 +62,10 @@ public class EnemyAI : MonoBehaviour
     #endregion
 
     #region INIT
-    public void Init(NexusControllerActions nexusControllerActions, EconomyActions economyActions, WavesControllerActions wavesControllerActions)
+    public void Init(EconomyActions economyActions, WavesControllerActions wavesControllerActions)
     {
-        this.nexusControllerActions = nexusControllerActions;
         this.economyActions = economyActions;
         this.wavesControllerActions = wavesControllerActions;
-
-        this.nexus = nexusControllerActions.onGetNexus?.Invoke();
 
         maxHealth = enemyData.MaxHealth;
         currentHealth = enemyData.MaxHealth;
@@ -80,7 +76,7 @@ public class EnemyAI : MonoBehaviour
 
         agent.speed = speed;
 
-        healthBar.Init();
+        healthBar.Init(true);
         healthBar.UpdateTarget(maxHealth, maxHealth);
 
         initialized = true;
@@ -99,6 +95,11 @@ public class EnemyAI : MonoBehaviour
             Die();
         }
     }
+
+    public void SetTarget(Transform target)
+    {
+        this.target = target;
+    }
     #endregion
 
     #region PRIVATE_METHODS
@@ -106,10 +107,19 @@ public class EnemyAI : MonoBehaviour
     #region AI
     private void Chase()
     {
-        GameObject go = GameObject.FindGameObjectWithTag("Segment");
+        if(target == null)
+        {
+            return;
+        }
 
-        agent.SetDestination(go.transform.position);
-        //agent.SetDestination(nexus.transform.position);
+        IAttackable attackable = target.GetComponent<IAttackable>();
+
+        if(attackable == null)
+        {
+            return;
+        }
+
+        agent.SetDestination(target.position);
     }
 
     private void Attack()
@@ -119,24 +129,19 @@ public class EnemyAI : MonoBehaviour
         if (!hasAttacked)
         {
             Ray ray = new Ray(transform.position, transform.forward);
-            RaycastHit hit;            
+            RaycastHit hit;
 
-            if (Physics.Raycast(ray, out hit, attackRange, nexusMask))
+            if (Physics.Raycast(ray, out hit, attackRange, segmentMask))
             {
                 IAttackable attackable = hit.collider.GetComponent<IAttackable>();
 
                 if (attackable != null)
                 {
                     attackable.TakeDamage(10);
+                    hasAttacked = true;
+                    Invoke(nameof(ResetAttack), attackRate);
                 }
             }
-
-            
-
-            //nexusControllerActions.onTakeDamage?.Invoke(10);
-
-            hasAttacked = true;
-            Invoke(nameof(ResetAttack), attackRate);
         }
     }
 

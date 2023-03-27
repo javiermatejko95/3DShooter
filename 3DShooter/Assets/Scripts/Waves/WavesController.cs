@@ -21,13 +21,13 @@ public class WavesController : MonoBehaviour
 
     private int enemiesAlive = 0;
 
-    private bool spawnEnemies = false;
+    private bool spawnEnemies = false;    
     #endregion
 
     #region ACTIONS
     private WavesControllerActions wavesControllerActions = new();
-    private NexusControllerActions nexusControllerActions = null;
     private EconomyActions economyActions = null;
+    private SegmentsControllerActions segmentsControllerActions = null;
     #endregion
 
     #region UNITY_CALLS
@@ -42,10 +42,10 @@ public class WavesController : MonoBehaviour
     #endregion
 
     #region INIT
-    public void Init(NexusControllerActions nexusControllerActions, EconomyActions economyActions)
+    public void Init(EconomyActions economyActions, SegmentsControllerActions segmentsControllerActions)
     {
-        this.nexusControllerActions = nexusControllerActions;
         this.economyActions = economyActions;
+        this.segmentsControllerActions = segmentsControllerActions;
 
         wavesControllerActions.onCheckEnemiesAlive += CheckEnemiesAlive;
         wavesControllerActions.onReduceEnemyAlive += ReduceEnemyAlive;
@@ -60,20 +60,23 @@ public class WavesController : MonoBehaviour
     #endregion
 
     #region PRIVATE_METHODS
-    private void SpawnEnemy(GameObject enemyPrefab)
+    private void SpawnEnemy(GameObject enemyPrefab, Transform[] segments)
     {
         EnemyAI enemyAI = Instantiate(enemyPrefab, spawnPoints[UnityEngine.Random.Range(0, spawnPoints.Length)]).GetComponent<EnemyAI>();
 
-        enemyAI.Init(nexusControllerActions, economyActions, wavesControllerActions);
+        enemyAI.Init(economyActions, wavesControllerActions);
+        enemyAI.SetTarget(GetNearestTarget(enemyAI.transform, segments));
     }
 
     private IEnumerator ISpawnWave(WaveData waveData)
     {
         enemiesAlive = waveData.Amount;
 
+        Transform[] segments = segmentsControllerActions.onGetSegmentsTransforms?.Invoke();
+
         for(int i = 0; i < waveData.Amount; i++)
         {
-            SpawnEnemy(waveData.EnemyPrefab.gameObject);
+            SpawnEnemy(waveData.EnemyPrefab.gameObject, segments);
 
             yield return new WaitForSeconds(1f / waveData.SpawnRate);
         }
@@ -110,6 +113,33 @@ public class WavesController : MonoBehaviour
         {
             wavesControllerActions.onCheckEnemiesAlive?.Invoke();
         }        
+    }
+
+    private Transform GetNearestTarget(Transform enemy, Transform[] transforms)
+    {
+        int index = 0;
+
+        float nearestDistance = -1f;
+
+        for(int i = 0; i < transforms.Length; i++)
+        {
+            float distance = Vector3.Distance(enemy.position, transforms[i].position);
+
+            if(nearestDistance == -1f)
+            {
+                nearestDistance = distance;
+                index = 0;
+                continue;
+            }
+
+            if(distance < nearestDistance)
+            {
+                nearestDistance = distance;
+                index = i;
+            }
+        }
+
+        return transforms[index];
     }
     #endregion
 }

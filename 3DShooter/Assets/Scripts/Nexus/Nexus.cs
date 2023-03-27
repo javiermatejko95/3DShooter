@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Nexus : MonoBehaviour
+public class Nexus : MonoBehaviour, IAttackable
 {
     #region EXPOSED_FIELDS
     [SerializeField] private HealthBar healthBar = null;
@@ -14,6 +14,8 @@ public class Nexus : MonoBehaviour
 
     private string id = string.Empty;
     private int healthAmount = 100;
+
+    private bool isDestroyed = false;
     #endregion
 
     #region UNITY_CALLS
@@ -28,8 +30,10 @@ public class Nexus : MonoBehaviour
         id = nexusData.Id;
         healthAmount = nexusData.MaxHealthAmount;
 
-        healthBar.Init();
+        healthBar.Init(true);
         healthBar.UpdateTarget(healthAmount, nexusData.MaxHealthAmount);
+
+        isDestroyed = false;
     }
     #endregion
 
@@ -39,6 +43,16 @@ public class Nexus : MonoBehaviour
         healthAmount -= amount;
 
         healthBar.UpdateTarget(healthAmount, nexusData.MaxHealthAmount);
+
+        if(healthAmount <= 0)
+        {
+            isDestroyed = true;
+        }
+    }
+
+    public bool GetIsDestroyed()
+    {
+        return isDestroyed;
     }
     #endregion
 
