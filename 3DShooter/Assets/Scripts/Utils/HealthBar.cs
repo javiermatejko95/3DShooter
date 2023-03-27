@@ -15,6 +15,8 @@ public class HealthBar : MonoBehaviour
 
     private float target = 0f;
 
+    private bool isWorldSpace = false;
+
     private bool initialized = false;
     #endregion
 
@@ -38,9 +40,14 @@ public class HealthBar : MonoBehaviour
     #endregion
 
     #region INIT
-    public void Init()
+    public void Init(bool isWorldSpace)
     {
-        camera = Camera.main;
+        this.isWorldSpace = isWorldSpace;
+
+        if(isWorldSpace)
+        {
+            camera = Camera.main;
+        }        
 
         initialized = true;
     }
@@ -56,6 +63,10 @@ public class HealthBar : MonoBehaviour
     #region PRIVATE_METHODS
     private void Rotate()
     {
+        if(!isWorldSpace)
+        {
+            return;
+        }
         //optimize by calculating if the bar is near or far
 
         transform.LookAt(camera.transform);
