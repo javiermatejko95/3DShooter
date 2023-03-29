@@ -11,6 +11,7 @@ public class WeaponController : MonoBehaviour
     #region EXPOSED_FIELDS
     [Header("Handlers")]
     [SerializeField] private WeaponHandler weaponHandler = null;
+    [SerializeField] private LayerMask ignoreMask = default;
 
     [Space, Header("Timers")]
     [SerializeField] private Timer weaponTimer = null;
@@ -235,10 +236,14 @@ public class WeaponController : MonoBehaviour
         playerUIActions.onUpdateAmmoText?.Invoke(selectedWeaponModel.CurrentAmmo, selectedWeaponModel.CurrentMaxAmmo);
 
         RaycastHit hit;
-        if (Physics.Raycast(camera.transform.position, camera.transform.forward, out hit, 100f))
+        if (Physics.Raycast(camera.transform.position, camera.transform.forward, out hit, 100f, ~ignoreMask))
         {
-            DamageTarget(hit);
-            DamageEnemy(hit);
+            IAttackable attackable = hit.collider.GetComponent<IAttackable>();
+
+            if(attackable != null)
+            {
+                attackable.TakeDamage(selectedWeapon.WeaponModel.Damage);
+            }
         }
 
         if(selectedWeaponModel.CurrentAmmo <= 0)
@@ -326,25 +331,5 @@ public class WeaponController : MonoBehaviour
         selectedWeaponModel.CurrentAmmo = selectedWeaponModel.MaxMagazineSize;
         selectedWeaponModel.CurrentMaxAmmo = selectedWeaponModel.MaxAmmo;
         playerUIActions.onUpdateAmmoText?.Invoke(selectedWeaponModel.CurrentAmmo, selectedWeaponModel.CurrentMaxAmmo);
-    }
-
-    private void DamageTarget(RaycastHit hit)
-    {
-        TargetLimb targetLimb = hit.transform.GetComponent<TargetLimb>();
-
-        if (targetLimb != null)
-        {
-            targetLimb.TakeDamage(selectedWeapon.WeaponModel.Damage);
-        }
-    }
-
-    private void DamageEnemy(RaycastHit hit)
-    {
-        EnemyAI enemyAI = hit.transform.GetComponent<EnemyAI>();
-
-        if (enemyAI != null)
-        {
-            enemyAI.TakeDamage(selectedWeapon.WeaponModel.Damage);
-        }
     }
 }

@@ -14,6 +14,7 @@ public class Weapon : MonoBehaviour
 {
     #region EXPOSED_FIELDS
     [SerializeField] private WeaponData weaponData = null;
+    [SerializeField] private MuzzleFlash muzzleFlash = null;
     #endregion
 
     #region PRIVATE_FIELDS
@@ -34,6 +35,12 @@ public class Weapon : MonoBehaviour
         weaponActions.onShoot = Shoot;
         weaponActions.onAddAmmo = AddAmmo;
         weaponActions.onBuy = Buy;
+
+        if(muzzleFlash != null)
+        {
+            muzzleFlash.Init();
+        }
+        
     }
     #endregion
 
@@ -53,6 +60,7 @@ public class Weapon : MonoBehaviour
     private void Shoot()
     {
         weaponModel.CurrentAmmo--;
+        muzzleFlash.Flash();
     }
 
     private void AddAmmo(int amount)
