@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 public class WeaponControllerActions
@@ -34,6 +35,9 @@ public class WeaponController : MonoBehaviour
     [SerializeField] private KeyCode[] keys = null;
     
     [SerializeField] private GameObject weaponContainer = null;
+
+    [SerializeField] private ParticleSystem impactParticle = null;
+    [SerializeField] private TrailRenderer bulletTrail = null;
     #endregion
 
     #region PRIVATE_FIELDS
@@ -244,6 +248,12 @@ public class WeaponController : MonoBehaviour
             {
                 attackable.TakeDamage(selectedWeapon.WeaponModel.Damage);
             }
+
+            Transform bulletSpawnPoint = weaponActions.onGetBulletSpawnPoint?.Invoke();
+
+            TrailRenderer trail = Instantiate(bulletTrail, bulletSpawnPoint.position, Quaternion.identity);
+
+            StartCoroutine(ISpawnTrail(trail, hit));
         }
 
         if(selectedWeaponModel.CurrentAmmo <= 0)
@@ -255,6 +265,27 @@ public class WeaponController : MonoBehaviour
                 StartReloading();
             }            
         }
+    }
+
+    private IEnumerator ISpawnTrail(TrailRenderer trail, RaycastHit hit)
+    {
+        float time = 0f;
+
+        Vector3 startPosition = trail.transform.position;
+
+        while(time < 1f)
+        {
+            trail.transform.position = Vector3.Lerp(startPosition, hit.point, time);
+            time += Time.deltaTime / trail.time;
+
+            yield return null;
+        }
+
+        trail.transform.position = hit.point;
+
+        Instantiate(impactParticle, hit.point, Quaternion.LookRotation(hit.normal));
+
+        Destroy(trail.gameObject, trail.time);
     }
 
     private void Reload()

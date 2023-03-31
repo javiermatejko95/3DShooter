@@ -8,6 +8,7 @@ public class WeaponActions
     public Action onShoot = null;
     public Action<int> onAddAmmo = null;
     public Action onBuy = null;
+    public Func<Transform> onGetBulletSpawnPoint = null;
 }
 
 public class Weapon : MonoBehaviour
@@ -35,6 +36,7 @@ public class Weapon : MonoBehaviour
         weaponActions.onShoot = Shoot;
         weaponActions.onAddAmmo = AddAmmo;
         weaponActions.onBuy = Buy;
+        weaponActions.onGetBulletSpawnPoint = GetBulletSpawnPoint;
 
         if(muzzleFlash != null)
         {
@@ -80,6 +82,11 @@ public class Weapon : MonoBehaviour
     private void Buy()
     {
         weaponModel.Unlocked = true;
+    }
+
+    private Transform GetBulletSpawnPoint()
+    {
+        return muzzleFlash.transform;
     }
     #endregion
 }
