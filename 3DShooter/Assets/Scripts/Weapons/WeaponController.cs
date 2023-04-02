@@ -253,7 +253,15 @@ public class WeaponController : MonoBehaviour
 
             TrailRenderer trail = Instantiate(bulletTrail, bulletSpawnPoint.position, Quaternion.identity);
 
-            StartCoroutine(ISpawnTrail(trail, hit));
+            StartCoroutine(ISpawnTrail(trail, hit.point, hit.normal, true));
+        }
+        else
+        {
+            Transform bulletSpawnPoint = weaponActions.onGetBulletSpawnPoint?.Invoke();
+
+            TrailRenderer trail = Instantiate(bulletTrail, bulletSpawnPoint.position, Quaternion.identity);
+
+            StartCoroutine(ISpawnTrail(trail, bulletSpawnPoint.position + camera.transform.forward * 100, Vector3.zero, true));
         }
 
         if(selectedWeaponModel.CurrentAmmo <= 0)
@@ -267,23 +275,27 @@ public class WeaponController : MonoBehaviour
         }
     }
 
-    private IEnumerator ISpawnTrail(TrailRenderer trail, RaycastHit hit)
+    private IEnumerator ISpawnTrail(TrailRenderer trail, Vector3 hitPoint, Vector3 hitNormal, bool madeImpact)
     {
-        float time = 0f;
-
         Vector3 startPosition = trail.transform.position;
+        float distance = Vector3.Distance(trail.transform.position, hitPoint);
+        float remainingDistance = distance;
 
-        while(time < 1f)
+        while(remainingDistance > 0f)
         {
-            trail.transform.position = Vector3.Lerp(startPosition, hit.point, time);
-            time += Time.deltaTime / trail.time;
+            trail.transform.position = Vector3.Lerp(startPosition, hitPoint, 1 - (remainingDistance / distance));
+
+            remainingDistance -= 200f * Time.deltaTime;
 
             yield return null;
         }
 
-        trail.transform.position = hit.point;
+        trail.transform.position = hitPoint;
 
-        Instantiate(impactParticle, hit.point, Quaternion.LookRotation(hit.normal));
+        if(madeImpact)
+        {
+            Instantiate(impactParticle, hitPoint, Quaternion.LookRotation(hitNormal));
+        }        
 
         Destroy(trail.gameObject, trail.time);
     }
